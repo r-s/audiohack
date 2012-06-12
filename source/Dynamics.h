@@ -9,10 +9,10 @@
 class Dynamics:public Superclass {
 public:
     /////////////////////////////////
-    gain(double gain);          // gain in dB (+/-)
-    normalize();
+    void gain(double gain);          // gain in dB (+/-)
+    void normalize();
     ///////////////////////////////// Jann
-    gatePipe(double threshold); // threshold in dB (+ = pipe, - = gate)
+    void gatePipe(double threshold); // threshold in dB (+ = pipe, - = gate)
 };
 
 #endif
