@@ -10,7 +10,7 @@
 
 class Dynamics:public Superclass {
 public:
-    /////////////////////////////////
+    ///////////////////////////////// Phillip
     void gain(double gain);          // gain in dB (+/-)
     void normalize();
     ///////////////////////////////// Jann

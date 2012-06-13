@@ -16,20 +16,22 @@ private:
     
 public:
     
-    /////////////////////////////////
+    ///////////////////////////////// Daniel
     Superclass(string inputFilePath);                       // open File and write to rawData
     ~Superclass();                                          // write to File and close
     double readItem(int frame, int chan);                   // reads from rawData
     void writeItem(int frame, int chan, double value);      // writes to processedData
     
     ///////////////////////////////// Magnus
+    int nextZeroPass(double second);                        // returns Frame; - -> +
     void fadeIn(int length);                                // ramp-Tool
     void fadeOut(int length);                               // ramp-Tool
     
     ///////////////////////////////// Michael
     double rms(int startFrame, int endFrame);
     void invertPhase();                                     // inverts Phase
-    void reverse();                                         // time-reverts Data
+    void reverse();                                         // time-reverts whole Data
+    void reverse(int startFrame, int endFrame);             // time-reverts specific Data
 };
 
 #endif
