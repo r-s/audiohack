@@ -6,6 +6,8 @@
 #ifndef audiohack_Dynamics_h
 #define audiohack_Dynamics_h
 
+#include "Superclass.h"
+
 class Dynamics:public Superclass {
 public:
     /////////////////////////////////
