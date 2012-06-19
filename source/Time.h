@@ -3,8 +3,8 @@
 //  audiohack
 //
 
-#ifndef audiohack_Dynamics_h
-#define audiohack_Dynamics_h
+#ifndef audiohack_Time_h
+#define audiohack_Time_h
 
 #include "Superclass.h"
 

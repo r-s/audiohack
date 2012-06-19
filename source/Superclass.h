@@ -24,8 +24,8 @@ public:
     
     ///////////////////////////////// Magnus
     int nextZeroPass(double second);                        // returns Frame; - -> +
-    void fadeIn(int length);                                // ramp-Tool
-    void fadeOut(int length);                               // ramp-Tool
+    void fadeIn(int length);                                // ramp-Tool, length in frames
+    void fadeOut(int length);                               // ramp-Tool, length in frames
     
     ///////////////////////////////// Michael
     double rms(int startFrame, int endFrame);

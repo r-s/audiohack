@@ -5,6 +5,8 @@
 
 #include <iostream>
 #include "Dynamics.h"
+#include "Time.h"
+#include "Effects.h"
 
 int main (int argc, const char * argv[])
 {
