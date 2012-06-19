@@ -10,7 +10,7 @@
 
 class Effects:public Superclass {
 public:
-    ///////////////////////////////// Marcel + Marvin
+    //////////////////////////////// Marcel + Marvin
     void delay(double delayTime, double feedback, double mix);      // feedback & mix between 0 and 1
 };
 
