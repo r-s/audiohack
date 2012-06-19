@@ -7,7 +7,7 @@
 
 #include <Time.h>
 
-void Time::cutAtTime(doubel second) {
+void Time::cutAtTime(double second) {
 	// todo:
 	// - everything
 
