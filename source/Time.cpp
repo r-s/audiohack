@@ -1,11 +1,12 @@
+//
 // Time.cpp
-// created 19.06.12
-// by tobi
+// audiohack
+//
 
 // todo:
 // - everything
 
-#include <Time.h>
+#include "Time.h"
 
 void Time::cutAtTime(double second) {
 	// todo:

@@ -1,4 +1,4 @@
 //
-//  Superclass.h
+//  Superclass.cpp
 //  audiohack
 //
