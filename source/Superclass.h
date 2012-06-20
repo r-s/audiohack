@@ -6,7 +6,12 @@
 #ifndef audiohack_Superclass_h
 #define audiohack_Superclass_h
 
+#include "sndfile.h"
+
+#define BUFFER_SIZE 512
+
 using namespace std;
+
 
 class Superclass {
     
@@ -14,6 +19,9 @@ private:
     double** rawData;
     double** processedData;
     
+    SNDFILE *inFile, *outFile;
+    SF_INFO sfInfo;
+
 public:
     
     ///////////////////////////////// Daniel
