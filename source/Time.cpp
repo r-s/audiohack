@@ -4,7 +4,8 @@
 //
 
 // todo:
-// - everything
+// - cutAtTime
+// - cutAtContent
 
 #include "Time.h"
 
