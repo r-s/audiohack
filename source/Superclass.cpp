@@ -48,3 +48,24 @@ Superclass::~Superclass() {
 
 // double Superclass::readItem(int frame, int chan) {}
 // void Superclass::writeItem(int frame, int chan, double value) {}
+
+int Superclass::nextZeroPass(double seconds) {
+	
+	int totalNumFrames = rawData.getFrames;
+	int zeroPass;
+	int frameCount = (seconds * rawData.getSamplerate);
+	bool found = false;
+	
+	while (!found) {
+		if (rawData[0][frameCount] <= 0 && rawData[0][frameCount+1] >= 0) {
+			zeroPass = frameCount;
+			found = true;
+		}
+		
+		frameCount++;
+		
+	}
+	
+	return zeroPass;
+	
+}
