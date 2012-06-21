@@ -39,6 +39,7 @@ Superclass::Superclass(string inputFilePath) {  // Konstruktor
 }
 
 // File wird noch nicht beschrieben!
+//sfInfo.frames aktualisieren falls processedData abweichend von rawData
 Superclass::~Superclass() {  // Destruktor
     for (int channel = 0; channel < sfInfo.channels; channel++) { // Arrays löschen
         delete [] rawData[channel];
@@ -77,3 +78,21 @@ void Superclass::writeItem(int frame, int chan, double value) {
 	}
 	processedData[chan][frame] = value;
 }
+
+int Superclass::nextZeroPass(double seconds) {
+
+	int totalNumFrames = sfInfo.frames; // korrigiert
+	int zeroPass;
+	int frameCount = (seconds * sfInfo.samplerate);  // korrigiert
+	bool found = false;
+
+	while (!found) {
+		if (rawData[0][frameCount] <= 0 && rawData[0][frameCount+1] >= 0) {
+			zeroPass = frameCount;
+			found = true;
+		}
+	}
+		frameCount++;
+	    return zeroPass;
+}
+
