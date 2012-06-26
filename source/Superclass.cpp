@@ -79,57 +79,72 @@ void Superclass::writeItem(int frame, int chan, double value) {
 	processedData[chan][frame] = value;
 }
 
+//Magnus
 int Superclass::nextZeroPass(double seconds) {
 
-	int totalNumFrames = sfInfo.frames; // korrigiert
 	int zeroPass;
 	int frameCount = (seconds * sfInfo.samplerate);  // korrigiert
 	bool found = false;
 	
+	//Fehlermeldung, falls seconds sich auserhalb des Files befindet
 	try {
-		seconds * sfInfo.samplerate <= totalNumFrames;
+		seconds * sfInfo.samplerate <= sfInfo.frames;
 	}
 	catch ( ... ) {
-		cout << "Soundfile is only " << totalNumFrames*sfInfo.samplerate << " seconds long. \n";
+		cout << "Seconds-Angabe falsch! \n";
 	}
 
 	while (!found) {
-		if (rawData[0][frameCount] <= 0 && rawData[0][frameCount+1] >= 0) {
+		if (readItem(frameCount, 0) <= 0 && readItem(frameCount+1, 0) >= 0) {
 			zeroPass = frameCount;
 			found = true;
 		}
 		frameCount++;
 	}
-	    return zeroPass;
+	
+	return zeroPass;
 }
 
+//Magnus
 void Superclass::fadeIn(int length) {
-	int frameCount = 0;
-	int channelCount = 0;
 	
-	for (channelCount; channelCount == sfInfo.channels; channelCount++) {
-		for (frameCount; frameCount == sfInfo.frames; frameCount++) {
-			if (frameCount <= length) {
-				processedData[channelCount][frameCount] = rawData[channelCount][frameCount] * (double)( frameCount / length );
+	for (int channel = 0; channel == sfInfo.channels; channel++) {
+		for (int frame = 0; frame == sfInfo.frames; frame++) {
+			
+			//Fade
+			if (frame <= length) {
+				
+				writeItem(frame, channel, readItem(frame, channel) * (double)( frame / length ));
+			
+			//Normal	
 			} else {
-				processedData[channelCount][frameCount] = rawData[channelCount][frameCount];
+				
+				writeItem(frame, channel, readItem(frame, channel));
+				
 			};
 		}
 	}
 };
 
+//Magnus
 void Superclass::fadeOut(int length) {
-	int channelCount = 0;
-	int frameCount = 0;
+
 	int fadeStart = sfInfo.frames - length;
 	int fadeCount = 0;
 	
-	for (channelCount; channelCount == sfInfo.channels; channelCount++) {
-		for (frameCount; frameCount == sfInfo.frames; frameCount++) {
-			if (frameCount < fadeStart) {
-				processedData[channelCount][frameCount] = rawData[channelCount][frameCount];
-			} else if (frameCount >= fadeStart) {
-				processedData[channelCount][frameCount] = rawData[channelCount][frameCount] * (double)( fadeCount / length );
+	for (int channel = 0; channel == sfInfo.channels; channel++) {
+		for (int frame = 0; frame == sfInfo.frames; frame++) {
+			
+			//Normal
+			if (frame < fadeStart) {
+				
+				writeItem(frame, channel, readItem(frame, channel));
+			
+			//Fade	
+			} else if (frame >= fadeStart) {
+				
+				writeItem(frame, channel, readItem(frame, channel) * (double)( 1 - ( fadeCount / length )));
+				
 				fadeCount++;
 			}
 		}
