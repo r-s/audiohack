@@ -6,6 +6,7 @@
 #ifndef audiohack_Superclass_h
 #define audiohack_Superclass_h
 
+#include <string>
 #include "sndfile.h"
 
 #define BUFFER_SIZE 512

@@ -8,7 +8,7 @@
 
 #include "Superclass.h"
 
-class Time:public Superclass {
+class Time : public Superclass {
 public: 
     ///////////////////////////////// Simon + Tobias
     void cutAtTime(double second);
