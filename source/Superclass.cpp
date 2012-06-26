@@ -85,14 +85,54 @@ int Superclass::nextZeroPass(double seconds) {
 	int zeroPass;
 	int frameCount = (seconds * sfInfo.samplerate);  // korrigiert
 	bool found = false;
+	
+	try {
+		seconds * sfInfo.samplerate <= totalNumFrames;
+	}
+	catch ( ... ) {
+		cout << "Soundfile is only " << totalNumFrames*sfInfo.samplerate << " seconds long. \n";
+	}
 
 	while (!found) {
 		if (rawData[0][frameCount] <= 0 && rawData[0][frameCount+1] >= 0) {
 			zeroPass = frameCount;
 			found = true;
 		}
-	}
 		frameCount++;
+	}
 	    return zeroPass;
 }
 
+void Superclass::fadeIn(int length) {
+	int frameCount = 0;
+	int channelCount = 0;
+	
+	for (channelCount; channelCount == sfInfo.channels; channelCount++) {
+		for (frameCount; frameCount == sfInfo.frames; frameCount++) {
+			if (frameCount <= length) {
+				processedData[channelCount][frameCount] = rawData[channelCount][frameCount] * (double)( frameCount / length );
+			} else {
+				processedData[channelCount][frameCount] = rawData[channelCount][frameCount];
+			};
+		}
+	}
+};
+
+void Superclass::fadeOut(int length) {
+	int channelCount = 0;
+	int frameCount = 0;
+	int fadeStart = sfInfo.frames - length;
+	int fadeCount = 0;
+	
+	for (channelCount; channelCount == sfInfo.channels; channelCount++) {
+		for (frameCount; frameCount == sfInfo.frames; frameCount++) {
+			if (frameCount < fadeStart) {
+				processedData[channelCount][frameCount] = rawData[channelCount][frameCount];
+			} else if (frameCount >= fadeStart) {
+				processedData[channelCount][frameCount] = rawData[channelCount][frameCount] * (double)( fadeCount / length );
+				fadeCount++;
+			}
+		}
+	}
+	
+};
