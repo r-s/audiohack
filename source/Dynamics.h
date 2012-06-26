@@ -8,7 +8,7 @@
 
 #include "Superclass.h"
 
-class Dynamics:public Superclass {
+class Dynamics : public Superclass {
 public:
     ///////////////////////////////// Philipp
     void gain(double gain);          // gain in dB (+/-)
