@@ -124,7 +124,7 @@ void Superclass::fadeIn(int length) {
 			};
 		}
 	}
-};
+}
 
 //Magnus
 void Superclass::fadeOut(int length) {
@@ -150,4 +150,6 @@ void Superclass::fadeOut(int length) {
 		}
 	}
 	
-};
+}
+
+double Superclass::rms(int startFrame, int endFrame) { return 0.0;}
