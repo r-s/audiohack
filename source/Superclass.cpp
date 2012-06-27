@@ -3,7 +3,6 @@
 //  audiohack
 //
 
-#include <iostream>
 #include "Superclass.h"
 
 using namespace std;
@@ -38,10 +37,11 @@ Superclass::Superclass(string inputFilePath) {  // Konstruktor
     }
 }
 
-// File wird noch nicht beschrieben!
-//sfInfo.frames aktualisieren falls processedData abweichend von rawData
+//sfInfo.frames aktualisieren falls processedData abweichend von rawData oder zweite Instanz?
 Superclass::~Superclass() {  // Destruktor
-    for (int channel = 0; channel < sfInfo.channels; channel++) { // Arrays löschen
+
+	// Arrays löschen
+    for (int channel = 0; channel < sfInfo.channels; channel++) {
         delete [] rawData[channel];
     }
     delete [] rawData;
@@ -52,7 +52,7 @@ Superclass::~Superclass() {  // Destruktor
 }
 
 double Superclass::readItem(int frame, int chan) {
-	bool error = false;  // Fehlerprüfung nur für uns, wird noch entfernt
+	bool error = false;  // Fehlerprüfung nur für uns, wird am Ende entfernt
 
 	if (chan >= sfInfo.channels || chan < 0) {
 	    cout << "Channel-Angabe falsch!\n";
@@ -62,14 +62,14 @@ double Superclass::readItem(int frame, int chan) {
 	    cout << "Frame-Angabe falsch!\n";
 	    error = true;
 	}
-	if (error == 1) {
+	if (error) {
 	    return 0;
 	}
 	return rawData[chan][frame];
 }
 
 void Superclass::writeItem(int frame, int chan, double value) {
-	// Fehlerprüfung nur für uns, wird noch entfernt
+	// Fehlerprüfung nur für uns, wird am Ende entfernt
 	if(chan >= sfInfo.channels || chan < 0) {
 		cout << "Channel-Angabe falsch!\n";
 	}
@@ -77,6 +77,24 @@ void Superclass::writeItem(int frame, int chan, double value) {
 		cout << "Frame-Angabe falsch!\n";
 	}
 	processedData[chan][frame] = value;
+}
+
+void Superclass::writeFile(string outputFilePath) {
+		sf_count_t frameSum = sfInfo.frames;
+		outFile = sf_open(outputFilePath.c_str(), SFM_WRITE, &sfInfo);
+
+		double *processedDataInterleaved = new double[frameSum * sfInfo.channels];
+		int item = 0;
+
+		for (int frame = 0; frame < frameSum; frame++) {
+			for (int channel = 0; channel < sfInfo.channels; channel++) {
+				processedDataInterleaved[item++] = processedData[channel][frame];
+			}
+		}
+
+		sf_writef_double(outFile, processedDataInterleaved, frameSum);
+		sf_close(inFile);
+		sf_close(outFile);
 }
 
 int Superclass::nextZeroPass(double seconds) {
