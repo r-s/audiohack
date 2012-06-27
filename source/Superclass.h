@@ -21,6 +21,7 @@ private:
     double** processedData;
     
     SNDFILE *inFile, *outFile;
+protected:
     SF_INFO sfInfo;
 
 public:

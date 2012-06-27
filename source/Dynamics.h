@@ -8,13 +8,14 @@
 
 #include "Superclass.h"
 
-class Dynamics : public Superclass {
+class Dynamics:public Superclass {
 public:
     ///////////////////////////////// Philipp
     void gain(double gain);          // gain in dB (+/-)
     void normalize();
     ///////////////////////////////// Jann
-    void gatePipe(double threshold); // threshold in dB (+ = pipe, - = gate)
+    void gatePipe(bool gateOrPipe, double threshold, int attack, int release); // threshold in dB
+    //attack- und release-zeit in ms. gateOrPipe wählt zwischen Gate oder Pipe
 };
 
 #endif
