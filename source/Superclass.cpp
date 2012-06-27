@@ -3,6 +3,7 @@
 //  audiohack
 //
 
+#include <iostream>
 #include "Superclass.h"
 
 using namespace std;
@@ -37,11 +38,10 @@ Superclass::Superclass(string inputFilePath) {  // Konstruktor
     }
 }
 
-//sfInfo.frames aktualisieren falls processedData abweichend von rawData oder zweite Instanz?
+// File wird noch nicht beschrieben!
+//sfInfo.frames aktualisieren falls processedData abweichend von rawData
 Superclass::~Superclass() {  // Destruktor
-
-	// Arrays löschen
-    for (int channel = 0; channel < sfInfo.channels; channel++) {
+    for (int channel = 0; channel < sfInfo.channels; channel++) { // Arrays löschen
         delete [] rawData[channel];
     }
     delete [] rawData;
@@ -52,7 +52,7 @@ Superclass::~Superclass() {  // Destruktor
 }
 
 double Superclass::readItem(int frame, int chan) {
-	bool error = false;  // Fehlerprüfung nur für uns, wird am Ende entfernt
+	bool error = false;  // Fehlerprüfung nur für uns, wird noch entfernt
 
 	if (chan >= sfInfo.channels || chan < 0) {
 	    cout << "Channel-Angabe falsch!\n";
@@ -62,14 +62,14 @@ double Superclass::readItem(int frame, int chan) {
 	    cout << "Frame-Angabe falsch!\n";
 	    error = true;
 	}
-	if (error) {
+	if (error == 1) {
 	    return 0;
 	}
 	return rawData[chan][frame];
 }
 
 void Superclass::writeItem(int frame, int chan, double value) {
-	// Fehlerprüfung nur für uns, wird am Ende entfernt
+	// Fehlerprüfung nur für uns, wird noch entfernt
 	if(chan >= sfInfo.channels || chan < 0) {
 		cout << "Channel-Angabe falsch!\n";
 	}
@@ -79,78 +79,77 @@ void Superclass::writeItem(int frame, int chan, double value) {
 	processedData[chan][frame] = value;
 }
 
-void Superclass::writeFile(string outputFilePath) {
-		sf_count_t frameSum = sfInfo.frames;
-		outFile = sf_open(outputFilePath.c_str(), SFM_WRITE, &sfInfo);
-
-		double *processedDataInterleaved = new double[frameSum * sfInfo.channels];
-		int item = 0;
-
-		for (int frame = 0; frame < frameSum; frame++) {
-			for (int channel = 0; channel < sfInfo.channels; channel++) {
-				processedDataInterleaved[item++] = processedData[channel][frame];
-			}
-		}
-
-		sf_writef_double(outFile, processedDataInterleaved, frameSum);
-		sf_close(inFile);
-		sf_close(outFile);
-}
-
+//Magnus
 int Superclass::nextZeroPass(double seconds) {
 
-	int totalNumFrames = sfInfo.frames; // korrigiert
 	int zeroPass;
 	int frameCount = (seconds * sfInfo.samplerate);  // korrigiert
 	bool found = false;
 	
+	//Fehlermeldung, falls seconds sich auserhalb des Files befindet
 	try {
-		seconds * sfInfo.samplerate <= totalNumFrames;
+		seconds * sfInfo.samplerate <= sfInfo.frames;
 	}
 	catch ( ... ) {
-		cout << "Soundfile is only " << totalNumFrames*sfInfo.samplerate << " seconds long. \n";
+		cout << "Seconds-Angabe falsch! \n";
 	}
 
 	while (!found) {
-		if (rawData[0][frameCount] <= 0 && rawData[0][frameCount+1] >= 0) {
+		if (readItem(frameCount, 0) <= 0 && readItem(frameCount+1, 0) >= 0) {
 			zeroPass = frameCount;
 			found = true;
 		}
 		frameCount++;
 	}
-	    return zeroPass;
+	
+	return zeroPass;
 }
 
+//Magnus
 void Superclass::fadeIn(int length) {
-	int frameCount = 0;
-	int channelCount = 0;
 	
-	for (channelCount; channelCount == sfInfo.channels; channelCount++) {
-		for (frameCount; frameCount == sfInfo.frames; frameCount++) {
-			if (frameCount <= length) {
-				processedData[channelCount][frameCount] = rawData[channelCount][frameCount] * (double)( frameCount / length );
+	for (int channel = 0; channel == sfInfo.channels; channel++) {
+		for (int frame = 0; frame == sfInfo.frames; frame++) {
+			
+			//Fade
+			if (frame <= length) {
+				
+				writeItem(frame, channel, readItem(frame, channel) * (double)( frame / length ));
+			
+			//Normal	
 			} else {
-				processedData[channelCount][frameCount] = rawData[channelCount][frameCount];
+				
+				writeItem(frame, channel, readItem(frame, channel));
+				
 			};
 		}
 	}
-};
+}
 
+//Magnus
 void Superclass::fadeOut(int length) {
-	int channelCount = 0;
-	int frameCount = 0;
+
 	int fadeStart = sfInfo.frames - length;
 	int fadeCount = 0;
 	
-	for (channelCount; channelCount == sfInfo.channels; channelCount++) {
-		for (frameCount; frameCount == sfInfo.frames; frameCount++) {
-			if (frameCount < fadeStart) {
-				processedData[channelCount][frameCount] = rawData[channelCount][frameCount];
-			} else if (frameCount >= fadeStart) {
-				processedData[channelCount][frameCount] = rawData[channelCount][frameCount] * (double)( fadeCount / length );
+	for (int channel = 0; channel == sfInfo.channels; channel++) {
+		for (int frame = 0; frame == sfInfo.frames; frame++) {
+			
+			//Normal
+			if (frame < fadeStart) {
+				
+				writeItem(frame, channel, readItem(frame, channel));
+			
+			//Fade	
+			} else if (frame >= fadeStart) {
+				
+				writeItem(frame, channel, readItem(frame, channel) * (double)( 1 - ( fadeCount / length )));
+				
 				fadeCount++;
 			}
 		}
 	}
 	
-};
+}
+
+double Superclass::rms(int startFrame, int endFrame) { return 0.0;}

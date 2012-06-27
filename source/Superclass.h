@@ -7,8 +7,6 @@
 #define audiohack_Superclass_h
 
 #include <string>
-#include <iostream>
-
 #include "sndfile.h"
 
 #define BUFFER_SIZE 512
@@ -23,16 +21,16 @@ private:
     double** processedData;
     
     SNDFILE *inFile, *outFile;
-    SF_INFO sfInfo; // Zweite Instanz für processedData?
+protected:
+    SF_INFO sfInfo;
 
 public:
     
     ///////////////////////////////// Daniel
     Superclass(string inputFilePath);                       // open File and write to rawData
-    ~Superclass();                  					    // write to File and close
+    ~Superclass();                                          // write to File and close
     double readItem(int frame, int chan);                   // reads from rawData
     void writeItem(int frame, int chan, double value);      // writes to processedData
-    void writeFile(string outputFilePath);
     
     ///////////////////////////////// Magnus
     int nextZeroPass(double second);                        // returns Frame; - -> +
