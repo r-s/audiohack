@@ -63,7 +63,7 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                 if (silence)
                 {
                     //ab hier findet das release bzw. fadeOut statt
-                    for (int readToWrite; readToWrite<releaseLength; readToWrite++)
+                    for (int readToWrite = 0; readToWrite<releaseLength; readToWrite++)
                     {
                         writeItem(readToWrite+windowBegin, channel, readItem(readToWrite+windowBegin, channel) * (-1*(readToWrite/releaseLength)+1));
                     }
