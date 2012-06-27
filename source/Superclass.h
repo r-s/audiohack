@@ -6,6 +6,7 @@
 #ifndef audiohack_Superclass_h
 #define audiohack_Superclass_h
 
+#include <iostream>
 #include <string>
 #include "sndfile.h"
 
@@ -22,7 +23,7 @@ private:
     
     SNDFILE *inFile, *outFile;
 protected:
-    SF_INFO sfInfo;
+    SF_INFO sfInfo; // Zweite Instanz für protectedData?
 
 public:
     
@@ -31,6 +32,7 @@ public:
     ~Superclass();                                          // write to File and close
     double readItem(int frame, int chan);                   // reads from rawData
     void writeItem(int frame, int chan, double value);      // writes to processedData
+    void writeFile(string outputFilePath);					// writes to a File
     
     ///////////////////////////////// Magnus
     int nextZeroPass(double second);                        // returns Frame; - -> +

@@ -3,7 +3,6 @@
 //  audiohack
 //
 
-#include <iostream>
 #include "Superclass.h"
 
 using namespace std;
@@ -11,7 +10,7 @@ using namespace std;
 
 Superclass::Superclass(string inputFilePath) {  // Konstruktor
 
-	inFile = sf_open(inputFilePath.c_str(), SFM_READ, &sfInfo); //sf_open verlangt c-string
+	inFile = sf_open(inputFilePath.c_str(), SFM_READ, &sfInfo);
 
     if(!inFile) {
         cout << "Not able to open " << inputFilePath << endl;
@@ -38,8 +37,7 @@ Superclass::Superclass(string inputFilePath) {  // Konstruktor
     }
 }
 
-// File wird noch nicht beschrieben!
-//sfInfo.frames aktualisieren falls processedData abweichend von rawData
+//sfInfo.frames aktualisieren falls processedData abweichend von rawData oder zweite Instanz?
 Superclass::~Superclass() {  // Destruktor
     for (int channel = 0; channel < sfInfo.channels; channel++) { // Arrays löschen
         delete [] rawData[channel];
@@ -78,6 +76,25 @@ void Superclass::writeItem(int frame, int chan, double value) {
 	}
 	processedData[chan][frame] = value;
 }
+
+void Superclass::writeFile(string outputFilePath) {
+		sf_count_t frameSum = sfInfo.frames;
+		outFile = sf_open(outputFilePath.c_str(), SFM_WRITE, &sfInfo);
+
+		double *processedDataInterleaved = new double[frameSum * sfInfo.channels];
+		int item = 0;
+
+		for (int frame = 0; frame < frameSum; frame++) {
+			for (int channel = 0; channel < sfInfo.channels; channel++) {
+				processedDataInterleaved[item++] = processedData[channel][frame];
+			}
+		}
+
+		sf_writef_double(outFile, processedDataInterleaved, frameSum);
+		sf_close(inFile);
+		sf_close(outFile);
+}
+
 
 //Magnus
 int Superclass::nextZeroPass(double seconds) {
