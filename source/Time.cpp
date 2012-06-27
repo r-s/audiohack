@@ -26,11 +26,11 @@ void Time::cutAtTime(double second) {
 	if (second <= maxTime) {
 
 		double **part1 = new double *[sfInfo.channels], **part2 = new double *[sfInfo.channels];
-		double frameToCut = sfInfo.samplerate * second;
+		sf_count_t frameToCut = sfInfo.samplerate * second;
 
 		for (int channel = 0; channel < sfInfo.channels; channel++){
-			part1[channel] = new double[frameToCut];
-			part2[channel] = new double[sfInfo.frames - frameToCut];
+			part1[channel] = new double[(int)frameToCut];
+			part2[channel] = new double[sfInfo.frames - (int)frameToCut];
 		}
 
 		for (int channel = 0;  channel < sfInfo.channels; channel++) {
