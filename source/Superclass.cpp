@@ -21,6 +21,7 @@ Superclass::Superclass(string inputFilePath) {  // Konstruktor
 
     for (int channel = 0; channel < sfInfo.channels; channel++) {
         rawData[channel] = new double[sfInfo.frames];
+        processedData[channel] = new double[sfInfo.frames];
     }
 
     double data[BUFFER_SIZE * sfInfo.channels];

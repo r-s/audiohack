@@ -23,7 +23,14 @@ private:
     
     SNDFILE *inFile, *outFile;
 protected:
-    SF_INFO sfInfo; // Zweite Instanz für protectedData?
+    SF_INFO sfInfo;											// inputFile
+    SF_INFO sfInfoOut;										// outputFile
+
+    int outputFiles;
+    int outputChannels;
+    int outputFrames;
+
+    void reallocateOutputData(int channels, double length); // deallocate and reallocate processedData
 
 public:
     
@@ -38,6 +45,8 @@ public:
     int nextZeroPass(double second);                        // returns Frame; - -> +
     void fadeIn(int length);                                // ramp-Tool, length in frames
     void fadeOut(int length);                               // ramp-Tool, length in frames
+    void fadeIn(int length, int frame); // ?
+    void fadeIn(int length, int frame); // ?
     
     ///////////////////////////////// Michael
     double rms(int startFrame, int endFrame);
