@@ -7,6 +7,7 @@
 #define audiohack_Time_h
 
 #include "Superclass.h"
+#include <iostream>
 
 class Time : public Superclass {
 public: 
