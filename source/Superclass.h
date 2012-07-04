@@ -25,7 +25,8 @@ private:
 protected:
     SF_INFO sfInfo;											// input; Do not change!
     SF_INFO sfInfoOut;										// output; frames and channels are set in writeFile
-    string inputFilepath;									// full path for getting name and suffix etc.
+    string inputFilepath;									// path
+    string suffix;											// FileSuffix (e.g. '.wav')
 
     void reallocateOutputData(int channels, double length); // deallocate and reallocate processedData
 
