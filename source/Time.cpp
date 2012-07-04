@@ -51,7 +51,7 @@ void Time::cutAtTime(double second) {
 
 	}
 	else {
-		cout << "Falscher Wert: Die Schnittzeit Ÿbersteigt die GesamtlŠnge der Audiofile!" << endl;
+		cout << "Falscher Wert: Die Schnittzeit ï¿½bersteigt die Gesamtlï¿½nge der Audiofile!" << endl;
 		//Error = true;
 		//+ Errormessage
 	}
@@ -59,7 +59,7 @@ void Time::cutAtTime(double second) {
 }
 
 
-
+// unused
 bool Time::cutAtContent(double second, double tolerance) {
 	// todo:
 	// - everything

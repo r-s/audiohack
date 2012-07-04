@@ -23,9 +23,9 @@ private:
     
     SNDFILE *inFile, *outFile;
 protected:
-    SF_INFO sfInfo;											// inputFile
-    SF_INFO sfInfoOut;										// outputFile
-
+    SF_INFO sfInfo;											// input; Do not change!
+    SF_INFO sfInfoOut;										// output; frames and channels are set in writeFile
+    string inputFilepath;									// full path for getting name and suffix etc.
 
     void reallocateOutputData(int channels, double length); // deallocate and reallocate processedData
 
@@ -36,14 +36,14 @@ public:
     ~Superclass();                                          // write to File and close
     double readItem(int frame, int chan);                   // reads from rawData
     void writeItem(int frame, int chan, double value);      // writes to processedData
-    void writeFile(string outputFilePath);					// writes to a File
+    void writeFile(int start, int stop, int channels, string outputFilePath);	// writes to a File, time in frames
     
     ///////////////////////////////// Magnus
     int nextZeroPass(double second);                        // returns Frame; - -> +
     void fadeIn(int length);                                // ramp-Tool, length in frames
     void fadeOut(int length);                               // ramp-Tool, length in frames
-    void fadeIn(int length, int frame); // ?
-    void fadeOut(int length, int frame); // ?
+    void fadeIn(int length, int frame);
+    void fadeOut(int length, int frame);
     
     ///////////////////////////////// Michael
     double rms(int startFrame, int endFrame);
