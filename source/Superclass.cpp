@@ -170,4 +170,12 @@ void Superclass::fadeOut(int length) {
 	
 }
 
+//Michael
 double Superclass::rms(int startFrame, int endFrame) { return 0.0;}
+
+//Bernd
+void Superclass::reallocateOutputData(int channels, double length) { // deallocate and reallocate processedData
+
+
+
+}

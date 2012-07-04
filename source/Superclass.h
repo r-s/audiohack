@@ -26,9 +26,6 @@ protected:
     SF_INFO sfInfo;											// inputFile
     SF_INFO sfInfoOut;										// outputFile
 
-    int outputFiles;
-    int outputChannels;
-    int outputFrames;
 
     void reallocateOutputData(int channels, double length); // deallocate and reallocate processedData
 
@@ -46,7 +43,7 @@ public:
     void fadeIn(int length);                                // ramp-Tool, length in frames
     void fadeOut(int length);                               // ramp-Tool, length in frames
     void fadeIn(int length, int frame); // ?
-    void fadeIn(int length, int frame); // ?
+    void fadeOut(int length, int frame); // ?
     
     ///////////////////////////////// Michael
     double rms(int startFrame, int endFrame);
