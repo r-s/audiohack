@@ -10,15 +10,15 @@ using namespace std;
 
 Superclass::Superclass(string inputFilePath) {  // Konstruktor
 
+	inputFilepath = inputFilePath;
 	inFile = sf_open(inputFilePath.c_str(), SFM_READ, &sfInfo);
-
     if(!inFile) {
         cout << "Not able to open " << inputFilePath << endl;
         sf_perror(NULL);
     }
+
     rawData = new double*[sfInfo.channels];
     processedData = new double*[sfInfo.channels];
-
     for (int channel = 0; channel < sfInfo.channels; channel++) {
         rawData[channel] = new double[sfInfo.frames];
         processedData[channel] = new double[sfInfo.frames];
@@ -27,7 +27,6 @@ Superclass::Superclass(string inputFilePath) {  // Konstruktor
     double data[BUFFER_SIZE * sfInfo.channels];
     int framesRead;
     sf_count_t currentFrame = 0;
-
     while (framesRead = sf_readf_double(inFile, data, BUFFER_SIZE)) {
          for (int frame = 0; frame < framesRead; frame++) {
             for(int channel = 0; channel < sfInfo.channels; channel++) {
@@ -38,7 +37,6 @@ Superclass::Superclass(string inputFilePath) {  // Konstruktor
     }
 }
 
-//sfInfo.frames aktualisieren falls processedData abweichend von rawData oder zweite Instanz?
 Superclass::~Superclass() {  // Destruktor
     for (int channel = 0; channel < sfInfo.channels; channel++) { // Arrays löschen
         delete [] rawData[channel];
@@ -78,22 +76,24 @@ void Superclass::writeItem(int frame, int chan, double value) {
 	processedData[chan][frame] = value;
 }
 
-void Superclass::writeFile(string outputFilePath) {
-		sf_count_t frameSum = sfInfo.frames;
-		outFile = sf_open(outputFilePath.c_str(), SFM_WRITE, &sfInfo);
+void Superclass::writeFile(int start, int stop, int channels, string outputFilePath) {
+		sf_count_t frameSum = stop - start;
+		sfInfoOut.frames = frameSum;
+		sfInfoOut.channels = channels;
+		outFile = sf_open(outputFilePath.c_str(), SFM_WRITE, &sfInfoOut);
 
-		double *processedDataInterleaved = new double[frameSum * sfInfo.channels];
+		double *processedDataInterleaved = new double[frameSum * sfInfoOut.channels];
 		int item = 0;
-
 		for (int frame = 0; frame < frameSum; frame++) {
-			for (int channel = 0; channel < sfInfo.channels; channel++) {
-				processedDataInterleaved[item++] = processedData[channel][frame];
+			for (int channel = 0; channel < sfInfoOut.channels; channel++) {
+				processedDataInterleaved[item++] = processedData[channel][start + frame];
 			}
 		}
 
 		sf_writef_double(outFile, processedDataInterleaved, frameSum);
 		sf_close(inFile);
 		sf_close(outFile);
+	    delete [] processedDataInterleaved;
 }
 
 
