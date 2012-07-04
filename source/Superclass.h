@@ -46,7 +46,7 @@ public:
     void fadeIn(int length);                                // ramp-Tool, length in frames
     void fadeOut(int length);                               // ramp-Tool, length in frames
     void fadeIn(int length, int frame); // ?
-    void fadeIn(int length, int frame); // ?
+    void fadeOut(int length, int frame); // ?
     
     ///////////////////////////////// Michael
     double rms(int startFrame, int endFrame);
