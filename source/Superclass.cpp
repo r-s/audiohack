@@ -35,6 +35,13 @@ Superclass::Superclass(string inputFilePath) {  // Konstruktor
             currentFrame++;
         }
     }
+	
+	sfInfoOut.frames = sfInfo.frames;
+	sfInfoOut.samplerate = sfInfo.samplerate;
+	sfInfoOut.channels = sfInfo.channels;
+	sfInfoOut.format = sfInfo.format;
+	sfInfoOut.sections= sfInfo.sections;
+	sfInfoOut.seekable = sfInfo.seekable;	
 }
 
 Superclass::~Superclass() {  // Destruktor
@@ -171,11 +178,24 @@ void Superclass::fadeOut(int length) {
 }
 
 //Michael
-double Superclass::rms(int startFrame, int endFrame) { return 0.0;}
+double Superclass::rms(int startFrame, int endFrame) { 
+	return 0.0;
+}
 
 //Bernd
 void Superclass::reallocateOutputData(int channels, double length) { // deallocate and reallocate processedData
 
+	for (int channel = 0; channel < sfInfo.channels; channel++) {
+    	delete [] processedData[channel];
+    }
+    delete [] processedData;
+	
+	sfInfoOut.channels = channels;
+	sfInfoOut.frames = (sf_count_t)(length * sfInfo.samplerate);
+	
+    processedData = new double*[channels];
 
-
+    for (int channel = 0; channel < channels; channel++) {
+        processedData[channel] = new double[sfInfoOut.frames];
+    }
 }
