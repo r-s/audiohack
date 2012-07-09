@@ -134,18 +134,32 @@ int Superclass::nextZeroPass(double seconds) {
 //Magnus
 void Superclass::fadeIn(int length) {
 	
+	fadeIn(length, 0);
+	
+}
+
+//Magnus
+void Superclass::fadeOut(int length) {
+	
+	fadeOut(length, (sfInfo.frames - length));
+	
+}
+
+//Magnus
+void Superclass::fadeIn(int length, int frame) {
+	
 	for (int channel = 0; channel == sfInfo.channels; channel++) {
-		for (int frame = 0; frame == sfInfo.frames; frame++) {
+		for (int frameCount = 0; frameCount == sfInfo.frames; frameCount++) {
 			
 			//Fade
-			if (frame <= length) {
+			if (frame <= frameCount && frameCount <= length + frame) {
 				
-				writeItem(frame, channel, readItem(frame, channel) * (double)( frame / length ));
-			
-			//Normal	
+				writeItem(frameCount, channel, readItem(frameCount, channel) * (double)( frameCount-frame / length ));
+				
+				//Normal	
 			} else {
 				
-				writeItem(frame, channel, readItem(frame, channel));
+				writeItem(frameCount, channel, readItem(frameCount, channel));
 				
 			};
 		}
@@ -153,31 +167,26 @@ void Superclass::fadeIn(int length) {
 }
 
 //Magnus
-void Superclass::fadeOut(int length) {
-
-	int fadeStart = sfInfo.frames - length;
-	int fadeCount = 0;
+void Superclass::fadeOut(int length, int frame) {
 	
 	for (int channel = 0; channel == sfInfo.channels; channel++) {
-		for (int frame = 0; frame == sfInfo.frames; frame++) {
+		for (int frameCount = 0; frameCount == sfInfo.frames; frameCount++) {
 			
-			//Normal
-			if (frame < fadeStart) {
+			//Fade
+			if (frame <= frameCount && frameCount <= length + frame) {
 				
-				writeItem(frame, channel, readItem(frame, channel));
-			
-			//Fade	
-			} else if (frame >= fadeStart) {
+				writeItem(frameCount, channel, readItem(frameCount, channel) * (double)(1 - ( frameCount-frame / length ) ));
 				
-				writeItem(frame, channel, readItem(frame, channel) * (double)( 1 - ( fadeCount / length )));
+				//Normal	
+			} else {
 				
-				fadeCount++;
-			}
+				writeItem(frameCount, channel, readItem(frameCount, channel));
+				
+			};
 		}
 	}
 	
 }
-
 //Michael
 //rawData wird rückwärts in processedData geschrieben
 void Superclass::reverse()
