@@ -4,6 +4,7 @@
 //
 
 #include "Superclass.h"
+#include <cmath>
 
 using namespace std;
 
@@ -178,9 +179,75 @@ void Superclass::fadeOut(int length) {
 }
 
 //Michael
-double Superclass::rms(int startFrame, int endFrame) { 
-	return 0.0;
+//rawData wird rückwärts in processedData geschrieben
+void Superclass::reverse()
+{		
+    int num = (int)sfInfo.frames;
+    
+    int chan = sfInfo.channels;
+	
+    for ( int channel = 0; channel <= chan; channel++) {
+        
+        for (int item = 0; item <= num; item++) {
+			processedData[channel][item] = rawData[channel][num - item];
+		}
+		
+    }
 }
+
+//rawData wird rückwärts in processedData mit bestimmten Start und Endwerten geschrieben
+void Superclass::reverse(int startFrame, int endFrame)
+{
+    int chan = sfInfo.channels;
+    
+    if (startFrame > endFrame){
+        cout << "startFrame larger than endFrame" << endl;
+    } else {
+		
+        for ( int channel = 0; channel <= chan; channel++) {
+			
+            for (int startframe = 0; startframe <= endFrame; startFrame++) {
+                processedData[channel][startFrame] = rawData[channel][endFrame - startFrame];
+            }
+        }
+    }
+}
+
+void Superclass::invertPhase()
+{		
+    int num = (int)sfInfo.frames;
+    
+    int chan = sfInfo.channels;
+    
+    for ( int i = 0; i <= chan; i++) {
+        
+        for (int item = 0; item <= num; item++) {
+			processedData[i][item] = rawData[i][item] * -1;
+		}
+		
+    }
+}
+
+//rms-wert: √( ( 1 / anzahlsamples ) * ( alle samples^2 addiert) )
+double Superclass::rms(int startFrame, int endFrame, int channel)
+{
+    int counter = 0;
+    int framecounter = 0;
+    double rms;
+    if (channel >= sfInfo.channels){
+        return 0;
+    } else {
+		
+		for (startFrame = 0; startFrame <= endFrame; startFrame++) {
+			counter = counter + (pow((rawData[channel][startFrame]),2));
+			framecounter++;
+		}
+    }
+	
+    rms = sqrt((1 / framecounter) * counter);
+    return rms;
+}
+
 
 //Bernd
 void Superclass::reallocateOutputData(int channels, double length) { // deallocate and reallocate processedData

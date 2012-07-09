@@ -47,7 +47,7 @@ public:
     void fadeOut(int length, int frame);
     
     ///////////////////////////////// Michael
-    double rms(int startFrame, int endFrame);
+    double rms(int startFrame, int endFrame, int channel);
     void invertPhase();                                     // inverts Phase
     void reverse();                                         // time-reverts whole Data
     void reverse(int startFrame, int endFrame);             // time-reverts specific Data

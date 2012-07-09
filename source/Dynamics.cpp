@@ -23,7 +23,7 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
 		// die Größe des letzten Fensters muss neu kalkuliert werden beim letzten Durchgang
 		if (windowBegin + windowSize >= sfInfo.frames) windowSize = sfInfo.frames - windowBegin;
         
-		double currentRMS = rms(windowBegin, windowBegin + windowSize - 1);        		
+		double currentRMS = rms(windowBegin, windowBegin + windowSize - 1, 0);      // hier muss noch channel-spezifisch ausgewertet werden  		
 		
 		// die if-Bedingung ergibt true für die beiden Fälle, in denen Klang geschrieben werden soll
 		if ((currentRMS < threshValue && pipe) || (currentRMS > threshValue && !pipe)) {
