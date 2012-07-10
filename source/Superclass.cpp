@@ -189,7 +189,7 @@ void Superclass::reverse()
     for ( int channel = 0; channel <= chan; channel++) {
         
         for (int item = 0; item <= num; item++) {
-			processedData[channel][item] = rawData[channel][num - item];
+			processedData[channel][item] = rawData[channel][num - item];	// Fehler!
 		}
 		
     }
