@@ -84,6 +84,18 @@ void Superclass::writeItem(int frame, int chan, double value) {
 	processedData[chan][frame] = value;
 }
 
+void Superclass::addItem(int frame, int chan, double value) {
+	// Fehlerprüfung nur für uns, wird noch entfernt
+	if(chan >= sfInfo.channels || chan < 0) {
+		cout << "Channel-Angabe falsch!\n";
+	}
+	if (frame >= sfInfo.frames || frame < 0) {
+		cout << "Frame-Angabe falsch!\n";
+	}
+	processedData[chan][frame] += value;
+}
+
+
 void Superclass::writeFile(int start, int stop, int channels, string outputFilePath) {
 		sf_count_t frameSum = stop - start;
 		sfInfoOut.frames = frameSum;

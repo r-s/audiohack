@@ -38,7 +38,7 @@ public:
     double readItem(int frame, int chan);                   // reads from rawData
     void writeItem(int frame, int chan, double value);      // writes to processedData
     void writeFile(int start, int stop, int channels, string outputFilePath);	// writes to a File, time in frames
-    
+    void addItem(int frame, int chan, double value); 
     ///////////////////////////////// Magnus
     int nextZeroPass(double second);                        // returns Frame; - -> +
     void fadeIn(int length);                                // ramp-Tool, length in frames
