@@ -10,7 +10,7 @@
 #include "Effects.h"
 #include <math.h>
 
-using namespace std.
+using namespace std;
 
 int Effects::delay(double delayTime, int feedback, double mix) {
     
