@@ -12,7 +12,7 @@
 class Time : public Superclass {
 public: 
     ///////////////////////////////// Simon + Tobias
-    void cutAtTime(double second);
+    int cutAtTime(double second);
     bool cutAtContent(double second, double tolerance); // tolerance in seconds; if tolerance > second -> return false
     	// fällt vorerst weg
 };

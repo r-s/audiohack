@@ -11,9 +11,10 @@
 
 using namespace std;
 
-void Time::cutAtTime(double second) {
+int Time::cutAtTime(double second) {
 	// todo:
-	// - Write both parts to File.
+	// - fadeOut and fadeIn at cutframe (100 frames)
+	// - return cutframe
 
 
 	//Parameter:
@@ -25,35 +26,22 @@ void Time::cutAtTime(double second) {
 
 	if (second <= maxTime) {
 
-		double **part1 = new double *[sfInfo.channels], **part2 = new double *[sfInfo.channels];
+		//double **part1 = new double *[sfInfo.channels], **part2 = new double *[sfInfo.channels];
 		sf_count_t frameToCut = sfInfo.samplerate * second;
 
-		for (int channel = 0; channel < sfInfo.channels; channel++){
-			part1[channel] = new double[(int)frameToCut];
-			part2[channel] = new double[sfInfo.frames - (int)frameToCut];
-		}
+		int fadeTime = 100;
 
-		for (int channel = 0;  channel < sfInfo.channels; channel++) {
-			for (int frame = 0; frame < frameToCut; frame++){
-				//part1[channel][frame] = rawData[channel][frame];
-				part1[channel][frame] = this->readItem(frame, channel);
+		this->fadeOut(fadeTime, frameToCut-fadeTime);
+		this->fadeIn(fadeTime, frameToCut);
 
-			}
-		}
-
-		for (int channel = 0;  channel < sfInfo.channels; channel++) {
-			for (int frame = 0; frame < frameToCut; frame++){
-				//part2[channel][frame] = rawData[channel][frame + frameToCut];
-				part2[channel][frame] = this->readItem(frame + frameToCut, channel);
-
-			}
-		}
+		return frameToCut;
 
 	}
 	else {
-		cout << "Falscher Wert: Die Schnittzeit �bersteigt die Gesamtl�nge der Audiofile!" << endl;
+		cout << "Falscher Wert: Die Schnittzeit übersteigt die Gesamtlänge der Audiofile!" << endl;
 		//Error = true;
 		//+ Errormessage
+		return 0;
 	}
 
 }
