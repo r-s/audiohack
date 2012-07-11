@@ -4,14 +4,13 @@
 //
 
 #include "Superclass.h"
-#include <cmath>
 
 using namespace std;
 
-
+// Daniel
 Superclass::Superclass(string inputFilePath) {  // Konstruktor
 
-	inputFilepath = inputFilePath;
+	inputFilepath = inputFilePath;  // set Class variable inputFilepath
 	inFile = sf_open(inputFilePath.c_str(), SFM_READ, &sfInfo);
     if(!inFile) {
         cout << "Not able to open " << inputFilePath << endl;
@@ -36,7 +35,6 @@ Superclass::Superclass(string inputFilePath) {  // Konstruktor
             currentFrame++;
         }
     }
-	
 	sfInfoOut.frames = sfInfo.frames;
 	sfInfoOut.samplerate = sfInfo.samplerate;
 	sfInfoOut.channels = sfInfo.channels;
@@ -50,7 +48,7 @@ Superclass::~Superclass() {  // Destruktor
         delete [] rawData[channel];
     }
     delete [] rawData;
-    for (int channel = 0; channel < sfInfo.channels; channel++) {
+    for (int channel = 0; channel < sfInfoOut.channels; channel++) {
     	delete [] processedData[channel];
     }
     delete [] processedData;
@@ -75,27 +73,27 @@ double Superclass::readItem(int frame, int chan) {
 
 void Superclass::writeItem(int frame, int chan, double value) {
 	// Fehlerprüfung nur für uns, wird noch entfernt
-	if(chan >= sfInfo.channels || chan < 0) {
+	if(chan >= sfInfoOut.channels || chan < 0) {
 		cout << "Channel-Angabe falsch!\n";
 	}
-	if (frame >= sfInfo.frames || frame < 0) {
+	if (frame >= sfInfoOut.frames || frame < 0) {
 		cout << "Frame-Angabe falsch!\n";
 	}
 	processedData[chan][frame] = value;
 }
-
+// Bernd
 void Superclass::addItem(int frame, int chan, double value) {
 	// Fehlerprüfung nur für uns, wird noch entfernt
-	if(chan >= sfInfo.channels || chan < 0) {
+	if(chan >= sfInfoOut.channels || chan < 0) {
 		cout << "Channel-Angabe falsch!\n";
 	}
-	if (frame >= sfInfo.frames || frame < 0) {
+	if (frame >= sfInfoOut.frames || frame < 0) {
 		cout << "Frame-Angabe falsch!\n";
 	}
 	processedData[chan][frame] += value;
 }
 
-
+// Daniel
 void Superclass::writeFile(int start, int stop, int channels, string outputFilePath) {
 		sf_count_t frameSum = stop - start;
 		sfInfoOut.frames = frameSum;

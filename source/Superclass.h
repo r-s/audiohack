@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <string>
+#include <cmath>
 #include "sndfile.h"
 
 #define BUFFER_SIZE 512
@@ -25,7 +26,7 @@ private:
 protected:
     SF_INFO sfInfo;											// input; Do not change!
     SF_INFO sfInfoOut;										// output; frames and channels are set in writeFile
-    string inputFilepath;									// path
+    string inputFilepath;									// Full Path
     string suffix;											// FileSuffix (e.g. '.wav')
 
     void reallocateOutputData(int channels, double length); // deallocate and reallocate processedData
