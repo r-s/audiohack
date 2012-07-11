@@ -17,11 +17,6 @@ int Time::cutAtTime(double second) {
 	// - return cutframe
 
 
-	//Parameter:
-	// - SampleRate (sfInfo.samplerate)
-	// - Schnittzeit(seconds)
-	// - rawData, (**rawData)
-	// - frameSum (sfInfo.frames)
 	double maxTime = sfInfo.frames / sfInfo.samplerate;
 
 	if (second <= maxTime) {
