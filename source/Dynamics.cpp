@@ -10,8 +10,8 @@
 
 void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
     
-    int attackLength = sfInfo.samplerate / attack;
-    int releaseLength = sfInfo.samplerate / release;
+    int attackLength = sfInfo.samplerate / (attack * 1000);
+    int releaseLength = sfInfo.samplerate / (release * 1000);
     double threshValue = pow(10, (threshold / 10));
     
     int windowSize = (int)((attack + release) * 2);
