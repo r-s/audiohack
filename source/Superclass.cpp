@@ -8,12 +8,12 @@
 using namespace std;
 
 // Daniel
-Superclass::Superclass(string inputFilePath) {  // Konstruktor
+Superclass::Superclass(string filePath) {  // Konstruktor
 
-	inputFilepath = inputFilePath;  // set Class variable inputFilepath
-	inFile = sf_open(inputFilePath.c_str(), SFM_READ, &sfInfo);
+	(*this).inputFilePath = filePath;  // set Class variable inputFilePath
+	inFile = sf_open(filePath.c_str(), SFM_READ, &sfInfo);
     if(!inFile) {
-        cout << "Not able to open " << inputFilePath << endl;
+        cout << "Not able to open " << filePath << endl;
         sf_perror(NULL);
     }
 
@@ -35,6 +35,7 @@ Superclass::Superclass(string inputFilePath) {  // Konstruktor
             currentFrame++;
         }
     }
+    // Bernd
 	sfInfoOut.frames = sfInfo.frames;
 	sfInfoOut.samplerate = sfInfo.samplerate;
 	sfInfoOut.channels = sfInfo.channels;
@@ -55,7 +56,7 @@ Superclass::~Superclass() {  // Destruktor
 }
 
 double Superclass::readItem(int frame, int chan) {
-	bool error = false;  // Fehlerprüfung nur für uns, wird noch entfernt
+	bool error = false;  // Debug für uns
 
 	if (chan >= sfInfo.channels || chan < 0) {
 	    cout << "Channel-Angabe falsch!\n";
@@ -72,7 +73,7 @@ double Superclass::readItem(int frame, int chan) {
 }
 
 void Superclass::writeItem(int frame, int chan, double value) {
-	// Fehlerprüfung nur für uns, wird noch entfernt
+	// Debug für uns
 	if(chan >= sfInfoOut.channels || chan < 0) {
 		cout << "Channel-Angabe falsch!\n";
 	}
@@ -83,7 +84,7 @@ void Superclass::writeItem(int frame, int chan, double value) {
 }
 // Bernd
 void Superclass::addItem(int frame, int chan, double value) {
-	// Fehlerprüfung nur für uns, wird noch entfernt
+	// Debug für uns
 	if(chan >= sfInfoOut.channels || chan < 0) {
 		cout << "Channel-Angabe falsch!\n";
 	}
@@ -94,24 +95,46 @@ void Superclass::addItem(int frame, int chan, double value) {
 }
 
 // Daniel
-void Superclass::writeFile(int start, int stop, int channels, string outputFilePath) {
-		sf_count_t frameSum = stop - start;
-		sfInfoOut.frames = frameSum;
-		sfInfoOut.channels = channels;
-		outFile = sf_open(outputFilePath.c_str(), SFM_WRITE, &sfInfoOut);
+void Superclass::writeFile(string insertion, int start, int stop, int channels) {
+	size_t pos = inputFilePath.find_last_of(".");
+	string outputFilePath = inputFilePath.insert(pos-1, insertion);
 
-		double *processedDataInterleaved = new double[frameSum * sfInfoOut.channels];
-		int item = 0;
-		for (int frame = 0; frame < frameSum; frame++) {
-			for (int channel = 0; channel < sfInfoOut.channels; channel++) {
-				processedDataInterleaved[item++] = processedData[channel][start + frame];
-			}
+	sf_count_t frameSum = stop - start;
+	sfInfoOut.frames = frameSum;
+	sfInfoOut.channels = channels;
+	outFile = sf_open(outputFilePath.c_str(), SFM_WRITE, &sfInfoOut);
+
+	double *processedDataInterleaved = new double[frameSum * sfInfoOut.channels];
+	int item = 0;
+	for (int frame = 0; frame < frameSum; frame++) {
+		for (int channel = 0; channel < sfInfoOut.channels; channel++) {
+			processedDataInterleaved[item++] = processedData[channel][start + frame];
 		}
+	}
 
-		sf_writef_double(outFile, processedDataInterleaved, frameSum);
-		sf_close(inFile);
-		sf_close(outFile);
-	    delete [] processedDataInterleaved;
+	sf_writef_double(outFile, processedDataInterleaved, frameSum);
+	sf_close(inFile);
+	sf_close(outFile);
+    delete [] processedDataInterleaved;
+}
+
+void Superclass::writeFile(string insertion) {
+	size_t pos = inputFilePath.find_last_of(".");
+	string outputFilePath = inputFilePath.insert(pos-1, insertion); // pos-1 noch zu testen
+	outFile = sf_open(outputFilePath.c_str(), SFM_WRITE, &sfInfoOut);
+
+	double *processedDataInterleaved = new double[sfInfoOut.frames * sfInfoOut.channels];
+	int item = 0;
+	for (int frame = 0; frame < sfInfoOut.frames; frame++) {
+		for (int channel = 0; channel < sfInfoOut.channels; channel++) {
+			processedDataInterleaved[item++] = processedData[channel][frame];
+		}
+	}
+
+	sf_writef_double(outFile, processedDataInterleaved, sfInfoOut.frames);
+	sf_close(inFile);
+	sf_close(outFile);
+    delete [] processedDataInterleaved;
 }
 
 
