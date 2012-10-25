@@ -7,10 +7,10 @@
 #define audiohack_Time_h
 
 #include "Superclass.h"
-#include <iostream>
 
 class Time : public Superclass {
-public: 
+public:
+    Time(string filePath);
     ///////////////////////////////// Simon + Tobias
     int cutAtTime(double second);
     bool cutAtContent(double second, double tolerance); // tolerance in seconds; if tolerance > second -> return false

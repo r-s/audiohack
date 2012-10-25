@@ -1,12 +1,12 @@
 //
 //  Dynamics.cpp
-//  AudioTool
+//  audiohack
 //
 
-#include <iostream>
 #include "Dynamics.h"
-#include "math.h"
 
+
+Dynamics::Dynamics(string filePath) : Superclass(filePath){}
 
 void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
     

@@ -1,15 +1,12 @@
 //
-// Time.cpp
-// audiohack
+//  Time.cpp
+//  audiohack
 //
 
-// todo:
-// - cutAtTime
-// - cutAtContent
 
 #include "Time.h"
 
-using namespace std;
+Time::Time(string filePath) : Superclass(filePath){}
 
 int Time::cutAtTime(double second) {
 	// todo:

@@ -1,16 +1,13 @@
 //
 //  Effects.cpp
-//  Audiohack
-//
-//  Created by Marcel Mendel on 26.06.12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  audiohack
 //
 
-#include <iostream>
+
 #include "Effects.h"
-#include <math.h>
 
-using namespace std;
+
+Effects::Effects(string filePath) : Superclass(filePath){}
 
 int Effects::delay(double delayTime, int feedback, double mix) {
     

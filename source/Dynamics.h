@@ -10,6 +10,7 @@
 
 class Dynamics:public Superclass {
 public:
+    Dynamics(string filePath);
     ///////////////////////////////// Philipp
     void gain(double gain);          // gain in dB (+/-)
     void normalize();
