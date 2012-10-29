@@ -27,18 +27,19 @@ protected:
     SF_INFO sfInfo;											// input; Do not change!
     SF_INFO sfInfoOut;										// output; frames and channels are set in writeFile
     string inputFilePath;									// Full Path
-
+    // Bernd
     void reallocateOutputData(int channels, double length); // deallocate and reallocate processedData
 
 public:
     
     ///////////////////////////////// Daniel
     Superclass(string filePath);      		                // open File and write to rawData
-    ~Superclass();                                          // write to File and close
+    ~Superclass();                                          // deletes arrays
     double readItem(int frame, int chan);                   // reads from rawData
     void writeItem(int frame, int chan, double value);      // writes to processedData
-    void writeFile(string insertion, int start, int stop, int channels);	// writes to a File, time in frames
-    void writeFile(string insertion);
+    void writeFile(string insertion, int start, int stop, int channels);	// writes to a file, time in frames
+    void writeFile(string insertion);						// writes to a file
+    // Bernd
     void addItem(int frame, int chan, double value); 
     ///////////////////////////////// Magnus
     int nextZeroPass(double second);                        // returns Frame; - -> +
