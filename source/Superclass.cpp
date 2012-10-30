@@ -98,7 +98,7 @@ void Superclass::addItem(int frame, int chan, double value) {
 // Daniel
 void Superclass::writeFile(string insertion, int start, int stop, int channels) {
 	size_t pos = inputFilePath.find_last_of(".");
-	string outputFilePath = inputFilePath.insert(pos-1, insertion);
+	string outputFilePath = inputFilePath.insert(pos, insertion);
 
 	sf_count_t frameSum = stop - start;
 	sfInfoOut.frames = frameSum;
@@ -122,7 +122,7 @@ void Superclass::writeFile(string insertion, int start, int stop, int channels) 
 
 void Superclass::writeFile(string insertion) {
 	size_t pos = inputFilePath.find_last_of(".");
-	string outputFilePath = inputFilePath.insert(pos-1, insertion); // pos-1 noch zu testen
+	string outputFilePath = inputFilePath.insert(pos, insertion);
 	SF_INFO copy = sfInfoOut;
 	outFile = sf_open(outputFilePath.c_str(), SFM_WRITE, &copy);
 
@@ -170,59 +170,61 @@ int Superclass::nextZeroPass(double seconds) {
 //Magnus
 void Superclass::fadeIn(int length) {
 	
-	fadeIn(length, 0);
+	this->fadeIn(length, 0);
 	
 }
 
 //Magnus
 void Superclass::fadeOut(int length) {
 	
-	fadeOut(length, (sfInfo.frames - length));
+	this->fadeOut(length, (sfInfo.frames - length));
 	
 }
 
 //Magnus
 void Superclass::fadeIn(int length, int frame) {
 	
-	for (int channel = 0; channel == sfInfo.channels; channel++) {
-		for (int frameCount = 0; frameCount == sfInfo.frames; frameCount++) {
+	for (int channel = 0; channel < sfInfo.channels; channel++) {
+		for (int frameCount = 0; frameCount < sfInfo.frames; frameCount++) {
 			
 			//Fade
 			if (frame <= frameCount && frameCount <= length + frame) {
 				
-				writeItem(frameCount, channel, readItem(frameCount, channel) * (double)( frameCount-frame / length ));
+				this->writeItem(frameCount, channel, this->readItem(frameCount, channel) * (frameCount-frame) / (double)length);
 				
 				//Normal	
 			} else {
 				
-				writeItem(frameCount, channel, readItem(frameCount, channel));
+				this->writeItem(frameCount, channel, this->readItem(frameCount, channel));
 				
 			};
 		}
 	}
+	this->writeFile("_fadeIn");
 }
 
 //Magnus
 void Superclass::fadeOut(int length, int frame) {
 	
-	for (int channel = 0; channel == sfInfo.channels; channel++) {
-		for (int frameCount = 0; frameCount == sfInfo.frames; frameCount++) {
+	for (int channel = 0; channel < sfInfo.channels; channel++) {
+		for (int frameCount = 0; frameCount < sfInfo.frames; frameCount++) {
 			
 			//Fade
 			if (frame <= frameCount && frameCount <= length + frame) {
 				
-				writeItem(frameCount, channel, readItem(frameCount, channel) * (double)(1 - ( frameCount-frame / length ) ));
+				this->writeItem(frameCount, channel, this->readItem(frameCount, channel) * (1 - (frameCount-frame) / (double)length));
 				
 				//Normal	
 			} else {
 				
-				writeItem(frameCount, channel, readItem(frameCount, channel));
+				this->writeItem(frameCount, channel, this->readItem(frameCount, channel));
 				
 			};
 		}
 	}
-	
+	this->writeFile("_fadeOut");
 }
+
 //Michael
 //rawData wird rückwärts in processedData geschrieben
 void Superclass::reverse()
