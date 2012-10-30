@@ -34,6 +34,7 @@ void Dynamics::gain(double gain_dB)
 {
     double gainFactor = from_dB(gain_dB);
     gainIntern(gainFactor);
+    this->writeFile("_gain");
 }
 
 
@@ -54,6 +55,7 @@ void Dynamics::normalize()
         }
     }
     gainIntern(1.0/max);
+    this->writeFile("_norm");
 }
 
 
