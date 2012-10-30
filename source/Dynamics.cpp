@@ -8,6 +8,56 @@
 
 Dynamics::Dynamics(string filePath) : Superclass(filePath){}
 
+
+double Dynamics::from_dB(double value)
+{
+    return pow(10.0, value/10.0);
+}
+
+
+void Dynamics::gainIntern(double gainFactor)
+{
+    for (int frame=0; frame<sfInfo.frames; frame++)
+    {
+        for (int channel=0; channel<sfInfo.channels; channel++)
+        {
+            writeItem(frame, 
+                      channel,
+                      readItem(frame,
+                               channel)*gainFactor);
+        }
+    }
+}
+
+
+void Dynamics::gain(double gain_dB)
+{
+    double gainFactor = from_dB(gain_dB);
+    gainIntern(gainFactor);
+}
+
+
+void Dynamics::normalize()
+{
+    double max = 0.0;
+    
+    for (int frame=0; frame<sfInfo.frames; frame++)
+    {
+        for (int channel=0; channel<sfInfo.channels; channel++)
+        {
+            double value = abs(readItem(frame,
+                                        channel));
+            if (max < value)
+            {
+                max = value;
+            }
+        }
+    }
+    gainIntern(1.0/max);
+}
+
+
+
 void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
     
     int attackLength = sfInfo.samplerate / (attack * 1000);

@@ -9,10 +9,14 @@
 #include "Superclass.h"
 
 class Dynamics:public Superclass {
+private:
+    double from_dB(double value);
+    void gainIntern(double gain);
+    
 public:
     Dynamics(string filePath);
-    ///////////////////////////////// Philipp
-    void gain(double gain);          // gain in dB (+/-)
+    
+    void gain(double gain_dB);
     void normalize();
     ///////////////////////////////// Jann
     void gatePipe(bool gateOrPipe, double threshold, int attack, int release); // threshold in dB
