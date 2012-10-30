@@ -23,7 +23,7 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
 		// die Größe des letzten Fensters muss neu kalkuliert werden beim letzten Durchgang
 		if (windowBegin + windowSize >= sfInfo.frames) windowSize = sfInfo.frames - windowBegin;
         
-		double currentRMS = rms(windowBegin, windowBegin + windowSize - 1, 0);      // hier muss noch channel-spezifisch ausgewertet werden  		
+		double currentRMS = this->rms(windowBegin, windowBegin + windowSize - 1, 0);      // hier muss noch channel-spezifisch ausgewertet werden
 		
 		// die if-Bedingung ergibt true für die beiden Fälle, in denen Klang geschrieben werden soll
 		if ((currentRMS < threshValue && pipe) || (currentRMS > threshValue && !pipe)) {
@@ -34,13 +34,13 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                     //ab hier findet das attack bzw. fadeIn statt
                     for (int readToWrite = 0; readToWrite<attackLength; readToWrite++)
                     {
-                        writeItem(readToWrite+windowBegin, channel, readItem(readToWrite+windowBegin, channel) * (readToWrite/attackLength));
+                        this->writeItem(readToWrite+windowBegin, channel, this->readItem(readToWrite+windowBegin, channel) * (readToWrite/attackLength));
                     }
                     //hier hört das attack bzw. fadeIn auf
                     
                     for (int readToWrite = 0; readToWrite<windowSize-attackLength; readToWrite++)
                     {
-                        writeItem(readToWrite+windowBegin+attackLength, channel, readItem(readToWrite+windowBegin+attackLength, channel));
+                        this->writeItem(readToWrite+windowBegin+attackLength, channel, this->readItem(readToWrite+windowBegin+attackLength, channel));
                     }
                     silence = false;//jetzt hört man alles wieder & kein infade mehr
                     
@@ -49,7 +49,7 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                 {
                     for (int readToWrite = 0; readToWrite<windowSize; readToWrite++)
                     {
-                        writeItem(readToWrite+windowBegin, channel, readItem(readToWrite+windowBegin, channel));
+                        this->writeItem(readToWrite+windowBegin, channel, this->readItem(readToWrite+windowBegin, channel));
                     }   //man hört sowieso etwas, von anfang bis ende des fensters
                 }
                 
@@ -65,13 +65,13 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                     //ab hier findet das release bzw. fadeOut statt
                     for (int readToWrite = 0; readToWrite<releaseLength; readToWrite++)
                     {
-                        writeItem(readToWrite+windowBegin, channel, readItem(readToWrite+windowBegin, channel) * (-1*(readToWrite/releaseLength)+1));
+                        this->writeItem(readToWrite+windowBegin, channel, this->readItem(readToWrite+windowBegin, channel) * (-1*(readToWrite/releaseLength)+1));
                     }
                     //hier hört das release bzw. fadeOut auf
                     
                     for (int writeToZero = windowBegin+releaseLength; writeToZero < (windowBegin+windowSize); writeToZero++)
                     {
-                        writeItem(writeToZero, channel, 0);
+                        this->writeItem(writeToZero, channel, 0);
                     };
                     silence = true; //ab jetzt ist alles leise & wird alles nicht mehr ausgefadet
                 }
@@ -81,7 +81,7 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                 {
                     for (int writeToZero = windowBegin; writeToZero < (windowBegin+windowSize); writeToZero++)
                     {
-                        writeItem(writeToZero, channel, 0);
+                        this->writeItem(writeToZero, channel, 0);
                     };//man hört sowieso nichts, von anfang bis ende des fensters
                 }
                 
