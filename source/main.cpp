@@ -32,41 +32,37 @@ int main (int argc, char* argv[])
          Superclass phase(inputfilepath);
          phase.invertPhase();
      }
-    
-// THIS WILL CAUSE BUILD ERRORS, BECAUSE NORMALIZE AND GAIN ARE NOT IMPLEMENTED YET!
-
-//     else if (!strcmp(function,"-norm")){
-//         Dynamics norm(inputfilepath);
-//         norm.normalize();
-//     }
-//     else if (!strcmp(function,"-gain")){
-//         Dynamics gain(inputfilepath);
-//         gain.gain(*argv[3]);
-//     }
-    
+     else if (!strcmp(function,"-norm")){
+         Dynamics norm(inputfilepath);
+         norm.normalize();
+     }
+     else if (!strcmp(function,"-gain")){
+         Dynamics gain(inputfilepath);
+         gain.gain((double)*argv[3]);
+     }
      else if (!strcmp(function,"-fadein")){
          Time fadeIn(inputfilepath);
-         fadeIn.fadeIn(*argv[3]);
+         fadeIn.fadeIn((int)*argv[3]);
      }
      else if (!strcmp(function,"-fadeout")){
          Time fadeOut(inputfilepath);
-         fadeOut.fadeOut(*argv[3]);
+         fadeOut.fadeOut((int)*argv[3]);
      }
      else if (!strcmp(function,"-cut")){
          Time cut(inputfilepath);
-         cut.cutAtTime(*argv[3]);
+         cut.cutAtTime((double)*argv[3]);
      }
      else if (!strcmp(function,"-gate")){
          Dynamics gate(inputfilepath);
-         gate.gatePipe(true, *argv[3], *argv[4], *argv[5]);
+         gate.gatePipe(true, (double)*argv[3], (double)*argv[4], (double)*argv[5]);
      }
      else if (!strcmp(function,"-pipe")){
          Dynamics pipe(inputfilepath);
-         pipe.gatePipe(false, *argv[3], *argv[4], *argv[5]);
+         pipe.gatePipe(false, (double)*argv[3], (double)*argv[4], (double)*argv[5]);
      }
      else if (!strcmp(function,"-delay")){
          Effects delay(inputfilepath);
-         delay.delay(*argv[3], *argv[4], *argv[5]);
+         delay.delay((double)*argv[3], (double)*argv[4], (double)*argv[5]);
      }
      else {
      cout << "Use: ./audiohack inputfilepath function [parameter 1] [parameter 2])" << endl << "For further documentation see user_interface.pdf" << endl;
