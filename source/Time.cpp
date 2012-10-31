@@ -13,12 +13,9 @@ int Time::cutAtTime(double second) {
 	// - fadeOut and fadeIn at cutframe (100 frames)
 	// - return cutframe
 
-
 	double maxTime = sfInfo.frames / sfInfo.samplerate;
 
-	if (second <= maxTime) {
-
-		//double **part1 = new double *[sfInfo.channels], **part2 = new double *[sfInfo.channels];
+	if (second <= maxTime and second > 0) {
 		sf_count_t frameToCut = sfInfo.samplerate * second;
 
 		int fadeTime = 100;
@@ -26,15 +23,31 @@ int Time::cutAtTime(double second) {
 		this->fadeOut(fadeTime, frameToCut-fadeTime);
 		this->fadeIn(fadeTime, frameToCut);
 
-		return frameToCut;
+		// writeFile(string insertion, int start, int stop, int channels)
+		// for both channels
+
+		this->writeFile("_cut01", 0, frameToCut-1, sfInfo.channels);
+
+		this->writeFile("_cut02", frameToCut, sfInfo.frames, sfInfo.channels);
+		return 0;
 
 	}
 	else {
-		cout << "Falscher Wert: Die Schnittzeit übersteigt die Gesamtlänge der Audiofile!" << endl;
+		//		cout << "Falscher Wert: Die Schnittzeit übersteigt die Gesamtlänge der Audiofile!" << endl;
+		// nicht mehr nötig, da fehlermeldungen via interface
 		//Error = true;
 		//+ Errormessage
-		return 0;
+
+		if(second <= maxTime)
+			return 1;
+		// return errorcode 1
+		if(second <= 0)
+			return 2;
+		// return errorcode 2
+
+		// TODO: fehlercode überprüfen und ggf anpassen
 	}
+	return 0;
 
 }
 
