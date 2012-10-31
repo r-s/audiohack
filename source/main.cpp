@@ -3,10 +3,11 @@
 //  audiohack
 //
 
-#include <iostream>
+#include <iostream> // wird eigentlich in Superclass.h aufgerufen
 #include "Dynamics.h"
 #include "Time.h"
 #include "Effects.h"
+//#include "Superclass.h" // ?
 
 using namespace std;
 

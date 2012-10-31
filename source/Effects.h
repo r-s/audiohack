@@ -12,7 +12,7 @@ class Effects:public Superclass {
 public:
     Effects(string filePath);
     //////////////////////////////// Marcel + Marvin
-    int delay(double delayTime, int feedback, double mix);      // feedback & mix between 0 and 1
+    int delay(double delayTime, double feedback, double mix);      // feedback & mix between 0 and 1
 };
 
 #endif

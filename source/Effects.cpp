@@ -9,14 +9,12 @@
 
 Effects::Effects(string filePath) : Superclass(filePath){}
 
-int Effects::delay(double delayTime, int feedback, double mix) {
+int Effects::delay(double delayTime, double feedback, double mix) {
     
 	// Mit ReadItem die Daten lesen
 	double newLength = sfInfo.frames/(double)sfInfo.samplerate + (feedback * delayTime);
 	
-	
 	this->reallocateOutputData(sfInfo.channels, newLength); // Laenge des Ausgangsfiles + Feedback * delayTime
-	
 	
 	double delayedSamples = delayTime * sfInfo.samplerate;  //Schrittgroesse der Samples
     
@@ -31,25 +29,23 @@ int Effects::delay(double delayTime, int feedback, double mix) {
             cout << "Error: Eingabewert ist negativ! Die Eingabe wurde auf 0 gesetzt." << endl;
     }
     
-   
-	for (int channel = 0; channel == sfInfo.channels; channel++)
+	for (int channel = 0; channel < sfInfo.channels; channel++)
 	{
 		for (int echoCounter = 0; echoCounter < feedback; echoCounter++) {
-            
 			
 			//Jeden Wert für mix vor der innersten Schleife neu berechnen
+
 			mix = pow(mix, echoCounter);
-			
-			
             
 			for (int inputFrame = 0; inputFrame < sfInfo.frames; inputFrame++) {
                 
-                addItem(inputFrame + delayedSamples, channel, readItem(inputFrame, channel) * mix);
+                this->addItem(inputFrame + delayedSamples, channel, this->readItem(inputFrame, channel) * mix);
 				
 			}
             
 		}
 		
-	} 
-	return newLength;
+	}
+	this->writeFile("_delay");
+	return 0;
 }

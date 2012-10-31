@@ -72,7 +72,6 @@ double Superclass::readItem(int frame, int chan) {
 	return rawData[chan][frame];
 }
 
-
 void Superclass::writeItem(int frame, int chan, double value) {
 	// Debug für uns
 	if(chan >= sfInfoOut.channels || chan < 0) {
@@ -83,6 +82,7 @@ void Superclass::writeItem(int frame, int chan, double value) {
 	}
 	processedData[chan][frame] = value;
 }
+
 // Bernd
 void Superclass::addItem(int frame, int chan, double value) {
 	// Debug für uns
@@ -98,7 +98,8 @@ void Superclass::addItem(int frame, int chan, double value) {
 // Daniel
 void Superclass::writeFile(string insertion, int start, int stop, int channels) {
 	size_t pos = inputFilePath.find_last_of(".");
-	string outputFilePath = inputFilePath.insert(pos, insertion);
+	string outputFilePath;
+	outputFilePath.insert(pos, insertion);
 
 	sf_count_t frameSum = stop - start;
 	sfInfoOut.frames = frameSum;
@@ -122,7 +123,9 @@ void Superclass::writeFile(string insertion, int start, int stop, int channels) 
 
 void Superclass::writeFile(string insertion) {
 	size_t pos = inputFilePath.find_last_of(".");
-	string outputFilePath = inputFilePath.insert(pos, insertion);
+	string outputFilePath;
+	outputFilePath.insert(pos, insertion);
+
 	SF_INFO copy = sfInfoOut;
 	outFile = sf_open(outputFilePath.c_str(), SFM_WRITE, &copy);
 
