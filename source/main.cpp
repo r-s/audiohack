@@ -56,19 +56,19 @@ int main (int argc, char* argv[])
      }
      else if (!strcmp(function,"-cut")){
          Time cut(inputfilepath);
-         cut.cutAtTime((double)*argv[3]);
+         cut.cutAtTime(atof(argv[3]));
      }
      else if (!strcmp(function,"-gate")){
          Dynamics gate(inputfilepath);
-         gate.gatePipe(true, (double)*argv[3], (double)*argv[4], (double)*argv[5]);
+         gate.gatePipe(true, atof(argv[3]), atof(argv[4]), atof(argv[5]));
      }
      else if (!strcmp(function,"-pipe")){
          Dynamics pipe(inputfilepath);
-         pipe.gatePipe(false, (double)*argv[3], (double)*argv[4], (double)*argv[5]);
+         pipe.gatePipe(false, atof(argv[3]), atof(argv[4]), atof(argv[5]));
      }
      else if (!strcmp(function,"-delay")){
          Effects delay(inputfilepath);
-         delay.delay((double)*argv[3], (double)*argv[4], (double)*argv[5]);
+         delay.delay(atof(argv[3]), atof(argv[4]), atof(argv[5]));
      }
      else {
      cout << "Use: ./audiohack inputfilepath function [parameter 1] [parameter 2])" << endl << "For further documentation see user_interface.pdf" << endl;

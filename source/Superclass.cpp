@@ -111,8 +111,10 @@ int Superclass::getChannels() {
 // Daniel
 void Superclass::writeFile(string insertion, int start, int stop, int channels) {
 	size_t pos = inputFilePath.find_last_of(".");
-	string outputFilePath = inputFilePath;
+	string outputFilePath = inputFilePath.c_str();
 	outputFilePath.insert(pos, insertion);
+    
+    cout << outputFilePath << endl;
 
 	sf_count_t frameSum = stop - start;
 	sfInfoOut.frames = frameSum;
@@ -135,25 +137,7 @@ void Superclass::writeFile(string insertion, int start, int stop, int channels) 
 }
 
 void Superclass::writeFile(string insertion) {
-	size_t pos = inputFilePath.find_last_of(".");
-	string outputFilePath;
-	outputFilePath.insert(pos, insertion);
-
-	SF_INFO copy = sfInfoOut;
-	outFile = sf_open(outputFilePath.c_str(), SFM_WRITE, &copy);
-
-	double *processedDataInterleaved = new double[sfInfoOut.frames * sfInfoOut.channels];
-	int item = 0;
-	for (int frame = 0; frame < sfInfoOut.frames; frame++) {
-		for (int channel = 0; channel < sfInfoOut.channels; channel++) {
-			processedDataInterleaved[item++] = processedData[channel][frame];
-		}
-	}
-
-	sf_writef_double(outFile, processedDataInterleaved, sfInfoOut.frames);
-	sf_close(inFile);
-	sf_close(outFile);
-    delete [] processedDataInterleaved;
+	this->writeFile(insertion, 0, sfInfoOut.frames, sfInfoOut.channels);
 }
 
 
