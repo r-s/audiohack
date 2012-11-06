@@ -70,7 +70,7 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
     double windowSize = (double)((attackLength + releaseLength) * 2);
 	bool silence = false;
 	
-	cout << windowSize << ", " << attackLength << ", " << releaseLength << ", " << threshValue << "\n";
+	//cout << windowSize << ", " << attackLength << ", " << releaseLength << ", " << threshValue << "\n";
 	for (int windowBegin = 0; windowBegin < sfInfo.frames; windowBegin = windowBegin + windowSize) {
 		double currentRMS = (double)rand()/RAND_MAX; //nur zur ueberpruefung
 		// die Größe des letzten Fensters muss neu kalkuliert werden beim letzten Durchgang
@@ -149,5 +149,7 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
             }
 		}
 	}
-    //this->writeFile("_gatepipe");
+    if (pipe == true) {this->writeFile("_gate");}
+    else if (pipe == false) {this->writeFile("_pipe");}
+    
 }
