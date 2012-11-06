@@ -62,14 +62,15 @@ void Dynamics::normalize()
 
 void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
     
-    int attackLength = sfInfo.samplerate / (attack * 1000);
-    int releaseLength = sfInfo.samplerate / (release * 1000);
-    double threshValue = pow(10, (threshold / 10));
+    int attackLength = (attack * sfInfo.samplerate) / 1000;
+    int releaseLength = (release * sfInfo.samplerate) / 1000;
+    
+    double threshValue = 1.0 * (pow(10.0, (threshold / 10)));
     
     double windowSize = (double)((attackLength + releaseLength) * 2);
 	bool silence = false;
 	
-	
+	cout << windowSize << ", " << attackLength << ", " << releaseLength << ", " << threshValue << "\n";
 	for (int windowBegin = 0; windowBegin < sfInfo.frames; windowBegin = windowBegin + windowSize) {
 		double currentRMS = (double)rand()/RAND_MAX; //nur zur ueberpruefung
 		// die Größe des letzten Fensters muss neu kalkuliert werden beim letzten Durchgang
@@ -77,22 +78,25 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
         
 		//double currentRMS = this->rms(windowBegin, windowBegin + windowSize - 1, 0);      // hier muss noch channel-spezifisch ausgewertet werden
 		
-        cout << windowBegin;
+        //cout << windowBegin;
 		// die if-Bedingung ergibt true für die beiden Fälle, in denen Klang geschrieben werden soll
 		if ((currentRMS < threshValue && pipe) || (currentRMS > threshValue && !pipe)) {
             
 			for (int channel = 0; channel < sfInfo.channels; channel++) {
+                //cout << channel;
                 if (!silence)
                 {
                     //ab hier findet das attack bzw. fadeIn statt
                     for (int readToWrite = 0; readToWrite<attackLength; readToWrite++)
                     {
+                        //cout << readToWrite;
                         this->writeItem(readToWrite+windowBegin, channel, this->readItem(readToWrite+windowBegin, channel) * (readToWrite/attackLength));
                     }
                     //hier hört das attack bzw. fadeIn auf
                     
                     for (int readToWrite = 0; readToWrite<windowSize-attackLength; readToWrite++)
                     {
+                        //cout << readToWrite;
                         this->writeItem(readToWrite+windowBegin+attackLength, channel, this->readItem(readToWrite+windowBegin+attackLength, channel));
                     }
                     silence = false;//jetzt hört man alles wieder & kein infade mehr
@@ -102,6 +106,7 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                 {
                     for (int readToWrite = 0; readToWrite<windowSize; readToWrite++)
                     {
+                        //cout << readToWrite;
                         this->writeItem(readToWrite+windowBegin, channel, this->readItem(readToWrite+windowBegin, channel));
                     }   //man hört sowieso etwas, von anfang bis ende des fensters
                 }
@@ -118,12 +123,14 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                     //ab hier findet das release bzw. fadeOut statt
                     for (int readToWrite = 0; readToWrite<releaseLength; readToWrite++)
                     {
+                        //cout << readToWrite;
                         this->writeItem(readToWrite+windowBegin, channel, this->readItem(readToWrite+windowBegin, channel) * (-1*(readToWrite/releaseLength)+1));
                     }
                     //hier hört das release bzw. fadeOut auf
                     
                     for (int writeToZero = windowBegin+releaseLength; writeToZero < (windowBegin+windowSize); writeToZero++)
                     {
+                        //cout << writeToZero;
                         this->writeItem(writeToZero, channel, 0);
                     };
                     silence = true; //ab jetzt ist alles leise & wird alles nicht mehr ausgefadet
@@ -134,6 +141,7 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                 {
                     for (int writeToZero = windowBegin; writeToZero < (windowBegin+windowSize); writeToZero++)
                     {
+                        //cout << writeToZero;
                         this->writeItem(writeToZero, channel, 0);
                     };//man hört sowieso nichts, von anfang bis ende des fensters
                 }
@@ -141,5 +149,5 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
             }
 		}
 	}
-    this->writeFile("_gatepipe");
+    //this->writeFile("_gatepipe");
 }
