@@ -41,6 +41,9 @@ public:
 
     // Bernd
     void addItem(int frame, int chan, double value); 		// adds an value to an existing item
+	sf_count_t getFrames();
+	int getSampleRate();
+	int getChannels();
 
     ///////////////////////////////// Magnus
     int nextZeroPass(double second);                        // returns Frame; - -> +

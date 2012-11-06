@@ -95,6 +95,19 @@ void Superclass::addItem(int frame, int chan, double value) {
 	processedData[chan][frame] += value;
 }
 
+sf_count_t Superclass::getFrames() {
+	return sfInfo.frames;
+}
+
+int Superclass::getSampleRate() {
+	return sfInfo.samplerate;
+}
+
+int Superclass::getChannels() {
+	return sfInfo.channels;
+}
+
+
 // Daniel
 void Superclass::writeFile(string insertion, int start, int stop, int channels) {
 	size_t pos = inputFilePath.find_last_of(".");
