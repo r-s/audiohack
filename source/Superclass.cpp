@@ -184,21 +184,21 @@ int Superclass::nextZeroPass(double seconds) {
 }
 
 //Magnus
-void Superclass::fadeIn(int length) {
+void Superclass::fadeIn(double length) {
 	
 	this->fadeIn(length, 0);
 	
 }
 
 //Magnus
-void Superclass::fadeOut(int length) {
+void Superclass::fadeOut(double length) {
 	
 	this->fadeOut(length, (sfInfo.frames - length));
 	
 }
 
 //Magnus
-void Superclass::fadeIn(int length, int frame) {
+void Superclass::fadeIn(double length, int frame) {
 	
 	for (int channel = 0; channel < sfInfo.channels; channel++) {
 		for (int frameCount = 0; frameCount < sfInfo.frames; frameCount++) {
@@ -220,7 +220,7 @@ void Superclass::fadeIn(int length, int frame) {
 }
 
 //Magnus
-void Superclass::fadeOut(int length, int frame) {
+void Superclass::fadeOut(double length, int frame) {
 	
 	for (int channel = 0; channel < sfInfo.channels; channel++) {
 		for (int frameCount = 0; frameCount < sfInfo.frames; frameCount++) {

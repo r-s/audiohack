@@ -47,10 +47,10 @@ public:
 
     ///////////////////////////////// Magnus
     int nextZeroPass(double second);                        // returns Frame; - -> +
-    void fadeIn(int length);                                // ramp-Tool, length in frames
-    void fadeOut(int length);                               // ramp-Tool, length in frames
-    void fadeIn(int length, int frame);
-    void fadeOut(int length, int frame);
+    void fadeIn(double length);                                // ramp-Tool, length in frames
+    void fadeOut(double length);                               // ramp-Tool, length in frames
+    void fadeIn(double length, int frame);
+    void fadeOut(double length, int frame);
     
     ///////////////////////////////// Michael
     double rms(int startFrame, int endFrame, int channel);
