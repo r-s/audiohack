@@ -244,39 +244,37 @@ void Superclass::fadeOut(double length, int frame) {
 }
 
 //Michael
-//rawData wird rückwärts in processedData geschrieben
-void Superclass::reverse()
-{		
-    int num = (int)sfInfo.frames;
-    
-    int chan = sfInfo.channels;
-	
-    for ( int channel = 0; channel <= chan; channel++) {
-        
-        for (int item = 0; item <= num; item++) {
-			processedData[channel][item] = rawData[channel][num - item];	// Fehler!
-		}
-		
-    }
-}
-
 //rawData wird rückwärts in processedData mit bestimmten Start und Endwerten geschrieben
 void Superclass::reverse(int startFrame, int endFrame)
 {
-    int chan = sfInfo.channels;
     
+    int num = (int)sfInfo.frames; 
+    int chan = sfInfo.channels;
     if (startFrame > endFrame){
         cout << "startFrame larger than endFrame" << endl;
     } else {
 		
-        for ( int channel = 0; channel <= chan; channel++) {
+        for ( int channel = 0; channel < chan; channel++) {
 			
-            for (int startframe = 0; startframe <= endFrame; startFrame++) {
-                processedData[channel][startFrame] = rawData[channel][endFrame - startFrame];
+            for (int start = startFrame; start < endFrame; start++) {
+                this->writeItem(start, channel, this->readItem(num - start, channel));
             }
         }
     }
+    this->writeFile("_rev_startend");
 }
+
+//rawData wird rückwärts in processedData geschrieben
+void Superclass::reverse()
+{	
+	int num = (int)sfInfo.frames; 
+    reverse(0, num);
+    
+    this->writeFile("_rev");
+}
+
+
+
 
 void Superclass::invertPhase()
 {		
@@ -287,7 +285,7 @@ void Superclass::invertPhase()
     for ( int i = 0; i <= chan; i++) {
         
         for (int item = 0; item <= num; item++) {
-			processedData[i][item] = rawData[i][item] * -1;
+			this->writeItem(item, chan, this->readItem(item, chan) * -1);
 		}
 		
     }
@@ -303,8 +301,8 @@ double Superclass::rms(int startFrame, int endFrame, int channel)
         return 0;
     } else {
 		
-		for (startFrame = 0; startFrame <= endFrame; startFrame++) {
-			counter = counter + (pow((rawData[channel][startFrame]),2));
+		for (int frame = 0;frame <= endFrame; frame++) {
+			counter = counter + (pow((this->readItem(startFrame + frame, channel)),2));
 			framecounter++;
 		}
     }
