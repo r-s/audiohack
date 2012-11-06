@@ -34,7 +34,7 @@ int Effects::delay(double delayTime, int feedback, double mix) {
 	
 	for (int channel = 0; channel < sfInfo.channels; channel++)
 	{
-		for (int echoCounter = 1; echoCounter < feedback; echoCounter++) {
+		for (int echoCounter = 0; echoCounter < feedback; echoCounter++) {
             
 			
 			//Jeden Wert für mix vor der innersten Schleife neu berechnen
