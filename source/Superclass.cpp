@@ -95,10 +95,23 @@ void Superclass::addItem(int frame, int chan, double value) {
 	processedData[chan][frame] += value;
 }
 
+sf_count_t Superclass::getFrames() {
+	return sfInfo.frames;
+}
+
+int Superclass::getSampleRate() {
+	return sfInfo.samplerate;
+}
+
+int Superclass::getChannels() {
+	return sfInfo.channels;
+}
+
+
 // Daniel
 void Superclass::writeFile(string insertion, int start, int stop, int channels) {
 	size_t pos = inputFilePath.find_last_of(".");
-	string outputFilePath;
+	string outputFilePath = inputFilePath;
 	outputFilePath.insert(pos, insertion);
 
 	sf_count_t frameSum = stop - start;
@@ -171,29 +184,31 @@ int Superclass::nextZeroPass(double seconds) {
 }
 
 //Magnus
-void Superclass::fadeIn(int length) {
+void Superclass::fadeIn(double length) {
 	
 	this->fadeIn(length, 0);
 	
 }
 
 //Magnus
-void Superclass::fadeOut(int length) {
+void Superclass::fadeOut(double length) {
 	
 	this->fadeOut(length, (sfInfo.frames - length));
 	
 }
 
 //Magnus
-void Superclass::fadeIn(int length, int frame) {
+void Superclass::fadeIn(double length, int frame) {
+	
+	int lengthInFrames = (int)(length * sfInfo.samplerate);
 	
 	for (int channel = 0; channel < sfInfo.channels; channel++) {
 		for (int frameCount = 0; frameCount < sfInfo.frames; frameCount++) {
 			
 			//Fade
-			if (frame <= frameCount && frameCount <= length + frame) {
+			if (frame <= frameCount && frameCount <= lengthInFrames + frame) {
 				
-				this->writeItem(frameCount, channel, this->readItem(frameCount, channel) * (frameCount-frame) / (double)length);
+				this->writeItem(frameCount, channel, this->readItem(frameCount, channel) * (frameCount-frame) / (double)lengthInFrames);
 				
 				//Normal	
 			} else {
@@ -207,7 +222,7 @@ void Superclass::fadeIn(int length, int frame) {
 }
 
 //Magnus
-void Superclass::fadeOut(int length, int frame) {
+void Superclass::fadeOut(double length, int frame) {
 	
 	for (int channel = 0; channel < sfInfo.channels; channel++) {
 		for (int frameCount = 0; frameCount < sfInfo.frames; frameCount++) {

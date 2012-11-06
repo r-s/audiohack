@@ -41,13 +41,16 @@ public:
 
     // Bernd
     void addItem(int frame, int chan, double value); 		// adds an value to an existing item
+	sf_count_t getFrames();
+	int getSampleRate();
+	int getChannels();
 
     ///////////////////////////////// Magnus
     int nextZeroPass(double second);                        // returns Frame; - -> +
-    void fadeIn(int length);                                // ramp-Tool, length in frames
-    void fadeOut(int length);                               // ramp-Tool, length in frames
-    void fadeIn(int length, int frame);
-    void fadeOut(int length, int frame);
+    void fadeIn(double length);                                // ramp-Tool, length in frames
+    void fadeOut(double length);                               // ramp-Tool, length in frames
+    void fadeIn(double length, int frame);
+    void fadeOut(double length, int frame);
     
     ///////////////////////////////// Michael
     double rms(int startFrame, int endFrame, int channel);

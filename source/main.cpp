@@ -24,8 +24,9 @@ int main (int argc, char* argv[])
         return 1;
     }
     
-    char* inputfilepath = argv[1];
+    string inputfilepath = argv[1];
     char* function = argv[2];
+	
     
     //cout << filepath << endl << function << endl;
     
@@ -43,15 +44,15 @@ int main (int argc, char* argv[])
      }
      else if (!strcmp(function,"-gain")){
          Dynamics gain(inputfilepath);
-         gain.gain((double)*argv[3]);
+         gain.gain(atof(argv[3]));
      }
      else if (!strcmp(function,"-fadein")){
          Time fadeIn(inputfilepath);
-         fadeIn.fadeIn((int)*argv[3]);
+         fadeIn.fadeIn(atof(argv[3]));
      }
      else if (!strcmp(function,"-fadeout")){
          Time fadeOut(inputfilepath);
-         fadeOut.fadeOut((int)*argv[3]);
+         fadeOut.fadeOut(atof(argv[3]));
      }
      else if (!strcmp(function,"-cut")){
          Time cut(inputfilepath);
