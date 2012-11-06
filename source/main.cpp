@@ -20,8 +20,9 @@ int main (int argc, char* argv[])
         return 1;
     }
     
-    char* inputfilepath = argv[1];
+    string inputfilepath = argv[1];
     char* function = argv[2];
+	
     
     //cout << filepath << endl << function << endl;
     
