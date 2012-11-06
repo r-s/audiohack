@@ -289,6 +289,7 @@ void Superclass::invertPhase()
 		}
 		
     }
+	this->writeFile("_phase");
 }
 
 //rms-wert: √( ( 1 / anzahlsamples ) * ( alle samples^2 addiert) )
