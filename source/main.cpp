@@ -18,7 +18,7 @@ int main (int argc, char* argv[])
     Dynamics pipe("/Users/Jann/Desktop/InputFile.aif");
     pipe.gatePipe(false, 40, 50, 50);
     */
-    /*
+    
     if (argc < 3) {
         cout << "Use: audiohack inputfilepath function [parameter 1] [parameter 2])" << endl << "For further documentation see user_interface.pdf" << endl;
         return 1;
@@ -74,7 +74,7 @@ int main (int argc, char* argv[])
      cout << "Use: ./audiohack inputfilepath function [parameter 1] [parameter 2])" << endl << "For further documentation see user_interface.pdf" << endl;
      return 1;
      }
-     */
+     
 	
     return 0;
 }
