@@ -20,15 +20,30 @@ int Effects::delay(double delayTime, int feedback, double mix) {
 	
 	double delayedSamples = delayTime * sfInfo.samplerate; //Schrittgroesse der Samples
     
+    int feedbackCopy;
+    double mixCopy;
+    
     // Feedbackeingabe begrenzen damit nicht z.b. 1000 mal eingegeben werden kann.
 	if (feedback > 100) {
+        feedbackCopy = feedback; //Übergabe an neue Variable für Errormessage. s.u.
 		feedback = 100;
-		cout << "Error: Maximal mögliche Eingabe beträgt 100! Die Eingabe wurde auf 100 reduziert." << endl;
     }
     
     if (feedback < 0) {
-		feedback = 0;
-		cout << "Error: Eingabewert ist negativ! Die Eingabe wurde auf 0 gesetzt." << endl;
+		return 2;
+    }
+    
+    if (delayTime < 0) {
+        return 2;
+    }
+    
+    if (mix > 1) {
+        mixCopy = mix; //Übergabe an neue Variable für Errormessage. s.u.
+        mix = 1;
+    }
+    
+    if (mix < 0) {
+        return 2;
     }
     
 	
@@ -38,7 +53,7 @@ int Effects::delay(double delayTime, int feedback, double mix) {
             
 			
 			//Jeden Wert für mix vor der innersten Schleife neu berechnen
-			mix = pow(mix, echoCounter); 
+			mix = pow(mix, echoCounter + 1);
 			//delayedSamples = delayedSamples * echoCounter;
 			
 			
@@ -46,7 +61,7 @@ int Effects::delay(double delayTime, int feedback, double mix) {
             
 			for (int inputFrame = 0; inputFrame < sfInfo.frames; inputFrame++) {
 				
-			
+                
                 this->addItem(inputFrame + delayedSamples * echoCounter, channel, this->readItem(inputFrame, channel) * mix);
 				
 			}
@@ -55,9 +70,16 @@ int Effects::delay(double delayTime, int feedback, double mix) {
 		
 	}
 	
+    
+    
+    
 	this->writeFile("_delay");
-	
-	
+    
+    
+    if (feedbackCopy > 100) { return 4; }
+    if (mixCopy > 1) { return 4; }
+    
+    
 	return 0; // NewLength einfach weglassen
 	
 	
