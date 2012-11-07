@@ -232,7 +232,6 @@ void Superclass::fadeOut(double length, int frame) {
 void Superclass::reverse(int startFrame, int endFrame)
 {
     
-    int num = (int)sfInfo.frames; 
     int chan = sfInfo.channels;
     if (startFrame > endFrame){
         cout << "startFrame larger than endFrame" << endl;
@@ -241,7 +240,7 @@ void Superclass::reverse(int startFrame, int endFrame)
         for ( int channel = 0; channel < chan; channel++) {
 			
             for (int start = startFrame; start < endFrame; start++) {
-                this->writeItem(start, channel, this->readItem(num - start, channel));
+                this->writeItem(start, channel, this->readItem(endFrame - start, channel));
             }
         }
     }
@@ -252,7 +251,7 @@ void Superclass::reverse(int startFrame, int endFrame)
 void Superclass::reverse()
 {	
 	int num = (int)sfInfo.frames; 
-    reverse(0, num);
+    reverse(0, num - 1);
     
     this->writeFile("_rev");
 }
