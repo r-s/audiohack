@@ -49,14 +49,11 @@ int Effects::delay(double delayTime, int feedback, double mix) {
 	
 	for (int channel = 0; channel < sfInfo.channels; channel++)
 	{
-		for (int echoCounter = 0; echoCounter < feedback; echoCounter++) {
+		for (int echoCounter = 0; echoCounter <= feedback; echoCounter++) {
             
 			
 			//Jeden Wert für mix vor der innersten Schleife neu berechnen
-			mix = pow(mix, echoCounter + 1);
-			//delayedSamples = delayedSamples * echoCounter;
-			
-			
+			mix = pow(mix, 2);
 			
             
 			for (int inputFrame = 0; inputFrame < sfInfo.frames; inputFrame++) {
