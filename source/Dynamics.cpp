@@ -62,14 +62,15 @@ void Dynamics::normalize()
 
 void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
     
-    int attackLength = sfInfo.samplerate / (attack * 1000);
-    int releaseLength = sfInfo.samplerate / (release * 1000);
-    double threshValue = pow(10, (threshold / 10));
+    if ((release < 146) and (attack < 146)) {
+        
+    int attackLength = (attack * sfInfo.samplerate) / 1000;
+    int releaseLength = (release * sfInfo.samplerate) / 1000;
     
+    double threshValue = 1.0 * (pow(10.0, (threshold / 10)));
     double windowSize = (double)((attackLength + releaseLength) * 2);
 	bool silence = false;
-	
-	
+        
 	for (int windowBegin = 0; windowBegin < sfInfo.frames; windowBegin = windowBegin + windowSize) {
 		double currentRMS = (double)rand()/RAND_MAX; //nur zur ueberpruefung
 		// die Größe des letzten Fensters muss neu kalkuliert werden beim letzten Durchgang
@@ -77,11 +78,11 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
         
 		//double currentRMS = this->rms(windowBegin, windowBegin + windowSize - 1, 0);      // hier muss noch channel-spezifisch ausgewertet werden
 		
-        cout << windowBegin;
 		// die if-Bedingung ergibt true für die beiden Fälle, in denen Klang geschrieben werden soll
 		if ((currentRMS < threshValue && pipe) || (currentRMS > threshValue && !pipe)) {
             
 			for (int channel = 0; channel < sfInfo.channels; channel++) {
+                //cout << channel;
                 if (!silence)
                 {
                     //ab hier findet das attack bzw. fadeIn statt
@@ -141,5 +142,8 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
             }
 		}
 	}
-    this->writeFile("_gatepipe");
+    if (pipe == true) {this->writeFile("_gate");}
+    else if (pipe == false) {this->writeFile("_pipe");}
+    }
+    else {cout << "Sorry! You need to choose values which are equal or less 145 for the parameters of attack and release!";}
 }

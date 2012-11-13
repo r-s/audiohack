@@ -111,7 +111,7 @@ int Superclass::getChannels() {
 // Daniel
 void Superclass::writeFile(string insertion, int start, int stop, int channels) {
 	size_t pos = inputFilePath.find_last_of(".");
-	string outputFilePath = inputFilePath;
+	string outputFilePath = inputFilePath.c_str();
 	outputFilePath.insert(pos, insertion);
 
 	sf_count_t frameSum = stop - start;
@@ -132,28 +132,11 @@ void Superclass::writeFile(string insertion, int start, int stop, int channels) 
 	sf_close(inFile);
 	sf_close(outFile);
     delete [] processedDataInterleaved;
+    cout << "Your file has been succesfully written to " << outputFilePath << endl;
 }
 
 void Superclass::writeFile(string insertion) {
-	size_t pos = inputFilePath.find_last_of(".");
-	string outputFilePath;
-	outputFilePath.insert(pos, insertion);
-
-	SF_INFO copy = sfInfoOut;
-	outFile = sf_open(outputFilePath.c_str(), SFM_WRITE, &copy);
-
-	double *processedDataInterleaved = new double[sfInfoOut.frames * sfInfoOut.channels];
-	int item = 0;
-	for (int frame = 0; frame < sfInfoOut.frames; frame++) {
-		for (int channel = 0; channel < sfInfoOut.channels; channel++) {
-			processedDataInterleaved[item++] = processedData[channel][frame];
-		}
-	}
-
-	sf_writef_double(outFile, processedDataInterleaved, sfInfoOut.frames);
-	sf_close(inFile);
-	sf_close(outFile);
-    delete [] processedDataInterleaved;
+	this->writeFile(insertion, 0, sfInfoOut.frames, sfInfoOut.channels);
 }
 
 
@@ -187,13 +170,17 @@ int Superclass::nextZeroPass(double seconds) {
 void Superclass::fadeIn(double length) {
 	
 	this->fadeIn(length, 0);
+    this->writeFile("_fadeIn");
 	
 }
 
 //Magnus
 void Superclass::fadeOut(double length) {
+    
+    int lengthInFrames = (int)(length * sfInfo.samplerate);
 	
-	this->fadeOut(length, (sfInfo.frames - length));
+	this->fadeOut(length, (sfInfo.frames - lengthInFrames));
+    this->writeFile("_fadeOut");
 	
 }
 
@@ -218,19 +205,20 @@ void Superclass::fadeIn(double length, int frame) {
 			};
 		}
 	}
-	this->writeFile("_fadeIn");
 }
 
 //Magnus
 void Superclass::fadeOut(double length, int frame) {
+    
+    int lengthInFrames = (int)(length * sfInfo.samplerate);
 	
 	for (int channel = 0; channel < sfInfo.channels; channel++) {
 		for (int frameCount = 0; frameCount < sfInfo.frames; frameCount++) {
 			
 			//Fade
-			if (frame <= frameCount && frameCount <= length + frame) {
+			if (frame <= frameCount && frameCount <= lengthInFrames + frame) {
 				
-				this->writeItem(frameCount, channel, this->readItem(frameCount, channel) * (1 - (frameCount-frame) / (double)length));
+				this->writeItem(frameCount, channel, this->readItem(frameCount, channel) * (1 - (frameCount-frame) / (double)lengthInFrames));
 				
 				//Normal	
 			} else {
@@ -240,7 +228,6 @@ void Superclass::fadeOut(double length, int frame) {
 			};
 		}
 	}
-	this->writeFile("_fadeOut");
 }
 
 //Michael
@@ -248,7 +235,6 @@ void Superclass::fadeOut(double length, int frame) {
 void Superclass::reverse(int startFrame, int endFrame)
 {
     
-    int num = (int)sfInfo.frames; 
     int chan = sfInfo.channels;
     if (startFrame > endFrame){
         cout << "startFrame larger than endFrame" << endl;
@@ -257,18 +243,17 @@ void Superclass::reverse(int startFrame, int endFrame)
         for ( int channel = 0; channel < chan; channel++) {
 			
             for (int start = startFrame; start < endFrame; start++) {
-                this->writeItem(start, channel, this->readItem(num - start, channel));
+                this->writeItem(start, channel, this->readItem(endFrame - start, channel));
             }
         }
     }
-    this->writeFile("_rev_startend");
 }
 
 //rawData wird rückwärts in processedData geschrieben
 void Superclass::reverse()
 {	
 	int num = (int)sfInfo.frames; 
-    reverse(0, num);
+    this->reverse(0, num - 1);
     
     this->writeFile("_rev");
 }
@@ -282,10 +267,10 @@ void Superclass::invertPhase()
     
     int chan = sfInfo.channels;
     
-    for ( int i = 0; i <= chan; i++) {
+    for ( int channel = 0; channel < chan; channel++) {
         
-        for (int item = 0; item <= num; item++) {
-			this->writeItem(item, chan, this->readItem(item, chan) * -1);
+        for (int item = 0; item < num; item++) {
+			this->writeItem(item, channel, this->readItem(item, channel) * -1);
 		}
 		
     }
