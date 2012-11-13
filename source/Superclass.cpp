@@ -113,8 +113,6 @@ void Superclass::writeFile(string insertion, int start, int stop, int channels) 
 	size_t pos = inputFilePath.find_last_of(".");
 	string outputFilePath = inputFilePath.c_str();
 	outputFilePath.insert(pos, insertion);
-    
-    cout << outputFilePath << endl;
 
 	sf_count_t frameSum = stop - start;
 	sfInfoOut.frames = frameSum;
@@ -134,6 +132,7 @@ void Superclass::writeFile(string insertion, int start, int stop, int channels) 
 	sf_close(inFile);
 	sf_close(outFile);
     delete [] processedDataInterleaved;
+    cout << "Your file has been succesfully written to " << outputFilePath << endl;
 }
 
 void Superclass::writeFile(string insertion) {
@@ -177,8 +176,10 @@ void Superclass::fadeIn(double length) {
 
 //Magnus
 void Superclass::fadeOut(double length) {
+    
+    int lengthInFrames = (int)(length * sfInfo.samplerate);
 	
-	this->fadeOut(length, (sfInfo.frames - length));
+	this->fadeOut(length, (sfInfo.frames - lengthInFrames));
     this->writeFile("_fadeOut");
 	
 }
@@ -208,14 +209,16 @@ void Superclass::fadeIn(double length, int frame) {
 
 //Magnus
 void Superclass::fadeOut(double length, int frame) {
+    
+    int lengthInFrames = (int)(length * sfInfo.samplerate);
 	
 	for (int channel = 0; channel < sfInfo.channels; channel++) {
 		for (int frameCount = 0; frameCount < sfInfo.frames; frameCount++) {
 			
 			//Fade
-			if (frame <= frameCount && frameCount <= length + frame) {
+			if (frame <= frameCount && frameCount <= lengthInFrames + frame) {
 				
-				this->writeItem(frameCount, channel, this->readItem(frameCount, channel) * (1 - (frameCount-frame) / (double)length));
+				this->writeItem(frameCount, channel, this->readItem(frameCount, channel) * (1 - (frameCount-frame) / (double)lengthInFrames));
 				
 				//Normal	
 			} else {
