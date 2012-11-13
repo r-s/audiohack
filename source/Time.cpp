@@ -14,7 +14,8 @@ int Time::cutAtTime(double second) {
 	if (second <= maxTime and second > 0) {
 		sf_count_t frameToCut = sfInfo.samplerate * second;
 
-		int fadeTime = 100;
+		double fadeTime = 1.0/sfInfo.samplerate*100;
+		cout << fadeTime << endl;
 
 		this->fadeOut(fadeTime, frameToCut-fadeTime);
 		this->fadeIn(fadeTime, frameToCut);
