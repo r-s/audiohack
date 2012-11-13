@@ -171,6 +171,7 @@ int Superclass::nextZeroPass(double seconds) {
 void Superclass::fadeIn(double length) {
 	
 	this->fadeIn(length, 0);
+    this->writeFile("_fadeIn");
 	
 }
 
@@ -178,6 +179,7 @@ void Superclass::fadeIn(double length) {
 void Superclass::fadeOut(double length) {
 	
 	this->fadeOut(length, (sfInfo.frames - length));
+    this->writeFile("_fadeOut");
 	
 }
 
@@ -202,7 +204,6 @@ void Superclass::fadeIn(double length, int frame) {
 			};
 		}
 	}
-	this->writeFile("_fadeIn");
 }
 
 //Magnus
@@ -224,7 +225,6 @@ void Superclass::fadeOut(double length, int frame) {
 			};
 		}
 	}
-	this->writeFile("_fadeOut");
 }
 
 //Michael
@@ -244,14 +244,13 @@ void Superclass::reverse(int startFrame, int endFrame)
             }
         }
     }
-    this->writeFile("_rev_startend");
 }
 
 //rawData wird rückwärts in processedData geschrieben
 void Superclass::reverse()
 {	
 	int num = (int)sfInfo.frames; 
-    reverse(0, num - 1);
+    this->reverse(0, num - 1);
     
     this->writeFile("_rev");
 }
@@ -265,10 +264,10 @@ void Superclass::invertPhase()
     
     int chan = sfInfo.channels;
     
-    for ( int i = 0; i <= chan; i++) {
+    for ( int channel = 0; channel < chan; channel++) {
         
-        for (int item = 0; item <= num; item++) {
-			this->writeItem(item, chan, this->readItem(item, chan) * -1);
+        for (int item = 0; item < num; item++) {
+			this->writeItem(item, channel, this->readItem(item, channel) * -1);
 		}
 		
     }
