@@ -14,15 +14,23 @@ int Time::cutAtTime(double second) {
 	if (second <= maxTime and second > 0) {
 		sf_count_t frameToCut = sfInfo.samplerate * second;
 
-		double fadeTime = 1.0/sfInfo.samplerate*100;
-		cout << fadeTime << endl;
+		int framesToFade = 100;
+		sf_count_t frames = sfInfoOut.frames;
+		// sfInfoOut.frames backup
 
-		this->fadeOut(fadeTime, frameToCut-fadeTime);
-		this->fadeIn(fadeTime, frameToCut);
+		double fadeTime = 1.0 / sfInfo.samplerate * framesToFade;
 
+		this->fadeOut(fadeTime, frameToCut-framesToFade);
 		this->writeFile("_cut01", 0, frameToCut-1, sfInfo.channels);
 
+		sfInfoOut.frames = frames;
+		// sfInfoOut wieder herstellen
+		// writeFile() verändert sfInfoOut.frames.
+		// wir müssen sie wiederherstellen, damit die zweite geschrieben wird.
+
+		this->fadeIn(fadeTime, frameToCut);
 		this->writeFile("_cut02", frameToCut, sfInfo.frames, sfInfo.channels);
+
 		return 0;
 
 	}
