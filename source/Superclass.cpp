@@ -280,20 +280,17 @@ void Superclass::invertPhase()
 //rms-wert: √( ( 1 / anzahlsamples ) * ( alle samples^2 addiert) )
 double Superclass::rms(int startFrame, int endFrame, int channel)
 {
-    int counter = 0;
-    int framecounter = 0;
-    double rms;
-    if (channel >= sfInfo.channels){
+    double counter = 0;
+    if (channel >= sfInfo.channels or channel < 0 or endFrame <= startFrame){
         return 0;
     } else {
 		
-		for (int frame = 0;frame <= endFrame; frame++) {
-			counter = counter + (pow((this->readItem(startFrame + frame, channel)),2));
-			framecounter++;
+		for (int frame = 0;frame < endFrame; frame++) {
+			counter += pow(this->readItem(startFrame + frame, channel),2);
 		}
     }
 	
-    rms = sqrt((1 / framecounter) * counter);
+    double rms = sqrt((1.0 / (endFrame-startFrame)) * counter);
     return rms;
 }
 
