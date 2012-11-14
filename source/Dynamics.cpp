@@ -76,12 +76,13 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
 		// die Größe des letzten Fensters muss neu kalkuliert werden beim letzten Durchgang
 		if (windowBegin + windowSize >= sfInfo.frames) {windowSize = sfInfo.frames - windowBegin;}
         
-		double currentRMS = this->rms(windowBegin, windowBegin + windowSize - 1, 0);
+        for (int channel = 0; channel < sfInfo.channels; channel++) {
+		double currentRMS = this->rms(windowBegin, windowBegin + windowSize - 1, channel);
 		
 		// die if-Bedingung ergibt true für die beiden Fälle, in denen Klang geschrieben werden soll
 		if ((currentRMS < threshValue && pipe) || (currentRMS > threshValue && !pipe)) {
             
-			for (int channel = 0; channel < sfInfo.channels; channel++) {
+			
                 //cout << channel;
                 if (!silence)
                 {
@@ -108,11 +109,11 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                 }
                 
 			}
-		}
+		
 		else {
             
 			
-			for (int channel = 0; channel < sfInfo.channels; channel++) {
+			
                 
                 if (silence)
                 {
@@ -139,9 +140,10 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                     };//man hört sowieso nichts, von anfang bis ende des fensters
                 }
                 
-            }
+            
 		}
 	}
+    }
     if (pipe == true) {this->writeFile("_gate");}
     else if (pipe == false) {this->writeFile("_pipe");}
     }
