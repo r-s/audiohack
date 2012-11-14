@@ -56,30 +56,48 @@ Superclass::~Superclass() {  // Destruktor
 }
 
 double Superclass::readItem(int frame, int chan) {
-	bool error = false;  // Debug für uns
+	bool error = false;  // ausfuehrliche Debug-Meldungen für uns
 
-	if (chan >= sfInfo.channels || chan < 0) {
-	    cout << "Channel-Angabe falsch!\n";
+	if (chan >= sfInfo.channels) {
+	    cout << "readItem: Channel-Angabe zu hoch: " << chan << endl;
 	    error = true;
 	}
-	if (frame >= sfInfo.frames || frame < 0) {
-	    cout << "Frame-Angabe falsch!\n";
+	if (chan < 0) {
+		cout << "readItem: Channel-Angabe negativ: " << chan << endl;
+		error = true;
+	}
+	if (frame >= sfInfo.frames) {
+	    cout << "readItem: Frame-Angabe zu hoch: " << frame << endl;
 	    error = true;
+	}
+	if (frame < 0) {
+		cout << "readItem: Frame-Angabe negativ: " << frame << endl;
+		error = true;
 	}
 	if (error == 1) {
 	    return 0;
 	}
+	//cout << "readItem: value: " << rawData[chan][frame] << endl; // moegliche zusaetzliche Ausgabe
 	return rawData[chan][frame];
 }
 
 void Superclass::writeItem(int frame, int chan, double value) {
-	// Debug für uns
-	if(chan >= sfInfoOut.channels || chan < 0) {
-		cout << "Channel-Angabe falsch!\n";
+	// ausfuehrliche Debug-Meldungen für uns
+
+	if (chan >= sfInfo.channels) {
+	    cout << "writeItem: Channel-Angabe zu hoch: " << chan << endl;
 	}
-	if (frame >= sfInfoOut.frames || frame < 0) {
-		cout << "Frame-Angabe falsch!\n";
+	if (chan < 0) {
+		cout << "writeItem: Channel-Angabe negativ: " << chan << endl;
 	}
+	if (frame >= sfInfo.frames) {
+	    cout << "writeItem: Frame-Angabe zu hoch: " << frame << endl;
+	}
+	if (frame < 0) {
+		cout << "writeItem: Frame-Angabe negativ: " << frame << endl;
+	}
+	//cout << "writeItem: value: " << value << endl; // moegliche zusaetzliche Ausgabe
+
 	processedData[chan][frame] = value;
 }
 
