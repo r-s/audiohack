@@ -66,10 +66,10 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
         
     int attackLength = (attack * sfInfo.samplerate) / 1000;
     int releaseLength = (release * sfInfo.samplerate) / 1000;
-    
     double threshValue = 1.0 * (pow(10.0, (threshold / 10)));
-        int windowSize = attackLength+releaseLength;
-	bool silence = false;
+        int windowSize = attackLength+releaseLength+1000;//für den fall, dass sowohl attack als auch release 1 oder sogar 0 sind
+        
+    bool silence = true;    
         
 	for (int windowBegin = 0; windowBegin < sfInfo.frames; windowBegin = windowBegin + windowSize) {
 		
@@ -77,14 +77,14 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
 		if (windowBegin + windowSize >= sfInfo.frames) {windowSize = (int)sfInfo.frames - windowBegin;}
         
         for (int channel = 0; channel < sfInfo.channels; channel++) {
+            
 		double currentRMS = this->rms(windowBegin, windowBegin + windowSize - 1, channel);
-		//double currentRMS = (double)rand()/RAND_MAX; //nur zur ueberpruefung
-		// die if-Bedingung ergibt true für die beiden Fälle, in denen Klang geschrieben werden soll
-		if ((currentRMS < threshValue && pipe) || (currentRMS > threshValue && !pipe)) {
+
+            
+		if ((currentRMS < threshValue && !pipe) || (currentRMS > threshValue && pipe)) {
             
 			
-                
-                if (!silence)
+                if (silence==true)
                 {
                     //ab hier findet das attack bzw. fadeIn statt
                     for (int readToFadeIn = 0; readToFadeIn<attackLength; readToFadeIn++)
@@ -98,8 +98,9 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                         this->writeItem(writeToCopy+windowBegin, channel, this->readItem(writeToCopy+windowBegin, channel));
                     }
                     silence = false;//jetzt hört man alles wieder & kein fadeIn mehr
-                    
+                    //@@@@@@@@EINZIGES RESTPROBLEM AN DIESER STELLE!!! Die Veränderung des Bools wird nicht gespeichert!!!@@@@@@@@
                 }
+            
                 else
                 {
                     for (int writeToCopy = windowBegin; writeToCopy < (windowBegin+windowSize); writeToCopy++)
@@ -107,15 +108,14 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                         this->writeItem(writeToCopy, channel, this->readItem(writeToCopy, channel));
                     }   //man hört sowieso etwas, von anfang bis ende des fensters
                 }
-                
+            
+            
 			}
 		
 		else {
             
-			
-			
-                
-                if (silence)
+            
+                if (silence==false)
                 {
                     //ab hier findet das release bzw. fadeOut statt
                     for (int readToFadeOut = 0; readToFadeOut<releaseLength; readToFadeOut++)
@@ -127,11 +127,11 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                     for (int writeToZero = releaseLength+1 + windowBegin; writeToZero < windowSize; writeToZero++)
                     {
                         this->writeItem(writeToZero, channel, 0);
-                    };
+                    }
                     silence = true; //ab jetzt ist alles leise & wird alles nicht mehr ausgefadet
+                    //@@@@@@@@EINZIGES RESTPROBLEM AN DIESER STELLE!!! Die Veränderung des Bools wird nicht gespeichert!!!@@@@@@@@
                 }
-                
-                
+            
                 else
                 {
                     for (int writeToZero = windowBegin; writeToZero < (windowBegin+windowSize); writeToZero++)
@@ -141,8 +141,9 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                 }
                 
             
-		}
-	}
+            }
+            
+    }
     }
     if (pipe == true) {this->writeFile("_gate");}
     else if (pipe == false) {this->writeFile("_pipe");}
