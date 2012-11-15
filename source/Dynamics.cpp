@@ -69,7 +69,10 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
     double threshValue = 1.0 * (pow(10.0, (threshold / 10)));
         int windowSize = attackLength+releaseLength+1000;//für den fall, dass sowohl attack als auch release 1 oder sogar 0 sind
         
-    bool silence = true;    
+    bool channelSilence [sfInfo.channels];
+        for (int channel = 0; channel<sfInfo.channels; channel++) {
+            channelSilence [channel] = true;
+        } //die Lösung: Jeder Channel erhält mit diesem Array sein eigenes Bool mit dem default-Wert true
         
 	for (int windowBegin = 0; windowBegin < sfInfo.frames; windowBegin = windowBegin + windowSize) {
 		
@@ -84,7 +87,7 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
 		if ((currentRMS < threshValue && !pipe) || (currentRMS > threshValue && pipe)) {
             
 			
-                if (silence==true)
+                if (channelSilence[channel]==true)
                 {
                     //ab hier findet das attack bzw. fadeIn statt
                     for (int readToFadeIn = 0; readToFadeIn<attackLength; readToFadeIn++)
@@ -97,8 +100,7 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                     {
                         this->writeItem(writeToCopy+windowBegin, channel, this->readItem(writeToCopy+windowBegin, channel));
                     }
-                    silence = false;//jetzt hört man alles wieder & kein fadeIn mehr
-                    //@@@@@@@@EINZIGES RESTPROBLEM AN DIESER STELLE!!! Die Veränderung des Bools wird nicht gespeichert!!!@@@@@@@@
+                    channelSilence[channel] = false;//jetzt hört man alles wieder & kein fadeIn mehr
                 }
             
                 else
@@ -115,7 +117,7 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
 		else {
             
             
-                if (silence==false)
+                if (channelSilence[channel]==false)
                 {
                     //ab hier findet das release bzw. fadeOut statt
                     for (int readToFadeOut = 0; readToFadeOut<releaseLength; readToFadeOut++)
@@ -128,8 +130,7 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                     {
                         this->writeItem(writeToZero, channel, 0);
                     }
-                    silence = true; //ab jetzt ist alles leise & wird alles nicht mehr ausgefadet
-                    //@@@@@@@@EINZIGES RESTPROBLEM AN DIESER STELLE!!! Die Veränderung des Bools wird nicht gespeichert!!!@@@@@@@@
+                    channelSilence[channel] = true; //ab jetzt ist alles leise & wird alles nicht mehr ausgefadet
                 }
             
                 else
