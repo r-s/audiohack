@@ -68,7 +68,7 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
     int releaseLength = (release * sfInfo.samplerate) / 1000;
     
     double threshValue = 1.0 * (pow(10.0, (threshold / 10)));
-    int windowSize = (attackLength + releaseLength) * 2;
+        int windowSize = attackLength+releaseLength;
 	bool silence = false;
         
 	for (int windowBegin = 0; windowBegin < sfInfo.frames; windowBegin = windowBegin + windowSize) {
@@ -77,8 +77,8 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
 		if (windowBegin + windowSize >= sfInfo.frames) {windowSize = (int)sfInfo.frames - windowBegin;}
         
         for (int channel = 0; channel < sfInfo.channels; channel++) {
-		//double currentRMS = this->rms(windowBegin, windowBegin + windowSize - 1, channel);
-		double currentRMS = (double)rand()/RAND_MAX; //nur zur ueberpruefung
+		double currentRMS = this->rms(windowBegin, windowBegin + windowSize - 1, channel);
+		//double currentRMS = (double)rand()/RAND_MAX; //nur zur ueberpruefung
 		// die if-Bedingung ergibt true für die beiden Fälle, in denen Klang geschrieben werden soll
 		if ((currentRMS < threshValue && pipe) || (currentRMS > threshValue && !pipe)) {
             
@@ -89,11 +89,11 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                     //ab hier findet das attack bzw. fadeIn statt
                     for (int readToFadeIn = 0; readToFadeIn<attackLength; readToFadeIn++)
                     {
-                        this->writeItem(readToFadeIn+windowBegin, channel, this->readItem(readToFadeIn+windowBegin, channel) * (readToFadeIn/attackLength));
+                        this->writeItem(readToFadeIn+windowBegin, channel, this->readItem(readToFadeIn+windowBegin, channel) * ((double)(readToFadeIn)/(double)(attackLength)));
                     }
                     //hier hört das attack bzw. fadeIn auf
                     
-                    for (int writeToCopy = attackLength + 1; writeToCopy < windowSize-1; writeToCopy++)
+                    for (int writeToCopy = attackLength+1; writeToCopy < windowSize; writeToCopy++)
                     {
                         this->writeItem(writeToCopy+windowBegin, channel, this->readItem(writeToCopy+windowBegin, channel));
                     }
@@ -102,7 +102,7 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                 }
                 else
                 {
-                    for (int writeToCopy = windowBegin; writeToCopy < (windowBegin+windowSize-1); writeToCopy++)
+                    for (int writeToCopy = windowBegin; writeToCopy < (windowBegin+windowSize); writeToCopy++)
                     {
                         this->writeItem(writeToCopy, channel, this->readItem(writeToCopy, channel));
                     }   //man hört sowieso etwas, von anfang bis ende des fensters
@@ -120,11 +120,11 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                     //ab hier findet das release bzw. fadeOut statt
                     for (int readToFadeOut = 0; readToFadeOut<releaseLength; readToFadeOut++)
                     {
-                        this->writeItem(readToFadeOut+windowBegin, channel, this->readItem((readToFadeOut + windowBegin) * (-1*(readToFadeOut/releaseLength)+1), channel));
+                        this->writeItem(readToFadeOut+windowBegin, channel, this->readItem(readToFadeOut+windowBegin, channel) * (-1*((double)(readToFadeOut)/(double)(releaseLength))+1));
                     }
                     //hier hört das release bzw. fadeOut auf
                     
-                    for (int writeToZero = releaseLength + 1; writeToZero < windowSize-1; writeToZero++)
+                    for (int writeToZero = releaseLength+1 + windowBegin; writeToZero < windowSize; writeToZero++)
                     {
                         this->writeItem(writeToZero, channel, 0);
                     };
@@ -134,7 +134,7 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
                 
                 else
                 {
-                    for (int writeToZero = windowBegin; writeToZero < (windowBegin+windowSize-1); writeToZero++)
+                    for (int writeToZero = windowBegin; writeToZero < (windowBegin+windowSize); writeToZero++)
                     {
                         this->writeItem(writeToZero, channel, 0);
                     };//man hört sowieso nichts, von anfang bis ende des fensters
@@ -148,5 +148,5 @@ void Dynamics::gatePipe(bool pipe, double threshold, int attack, int release) {
     else if (pipe == false) {this->writeFile("_pipe");}
     }
     else {cout << "Sorry! You need to choose values which are equal or less 145 for the parameters of attack and release!" << "\n";}
-    cout <<"sfinfo.frames = " << sfInfo.frames << "\n";
+    //cout <<"sfinfo.frames = " << sfInfo.frames << "\n";
 }

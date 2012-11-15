@@ -302,7 +302,7 @@ double Superclass::rms(int startFrame, int endFrame, int channel)
     if (channel >= sfInfo.channels or channel < 0 or endFrame <= startFrame){
         return 0;
     } else {
-		for (int frame = startFrame; frame < endFrame; frame++) {
+		for (int frame = 0; frame < (endFrame - startFrame); frame++) {
 			counter += pow(this->readItem(startFrame + frame, channel), 2);
 		}
     }
